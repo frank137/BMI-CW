@@ -18,3 +18,5 @@ figure('units','normalized','position',[.5 .5 .7 .4])
 trial1 = logical(trial1);
 plotSpikeRaster(trial1,'PlotType','imagesc','AutoLabel',true);
 ylabel 'Units'
+
+%GitHub line
