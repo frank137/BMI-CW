@@ -11,8 +11,9 @@ surf(trial1)
 xlabel 'time (ms)'
 ylabel 'recording units'
 
-colormap(gray)
+% colormap(gray)
 colorbar
+shading interp
 
 figure('units','normalized','position',[.5 .5 .7 .4])
 trial1 = logical(trial1);
