@@ -22,7 +22,7 @@ ylabel 'Units'
 
 %GitHub line
 
-%%
+%% 
 figure
 % hold on
 matrix = zeros(100,672);
