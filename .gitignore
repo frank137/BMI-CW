@@ -1,2 +1,4 @@
 
 *.m~
+*.icloud
+scripts/.monkeydata_training.mat.icloud
