@@ -6,7 +6,7 @@ trial1 = [trial(1,1).spikes];
 
 [Units,T] = size(trial1);
 
-
+ 
 surf(trial1)
 xlabel 'time (ms)'
 ylabel 'recording units'
@@ -28,4 +28,7 @@ plot(trial(1,1).handPos(3,:))
 
 %% part 2
 
+%for 
 
+
+plot(1:10,'.','MarkerSize',10);
