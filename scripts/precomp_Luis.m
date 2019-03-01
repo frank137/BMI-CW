@@ -22,49 +22,243 @@ ylabel 'Units'
 
 %GitHub line
 
-%% 
+%%
 figure
 % hold on
 matrix = zeros(100,672);
 for i = 1:length(trial(:,1)) % for the 100 trials for movement 1
-        cell = trial(i,1).spikes(1,:); %pick spikes out of trial i for 
-        %electrode (neuron) 1 for all the timesteps
-        plot(cell)
-    pause(0.1)
-%         length(cell)
-         matrix(i,1:length(cell)) = cell;
+    cell = trial(i,1).spikes(1,:); %pick spikes out of trial i for
+    %electrode (neuron) 1 for all the timesteps
+%     plot(cell)
+    %     pause(0.1)
+    %         length(cell)
+    matrix(i,1:length(cell)) = cell;
 end
 %   plotSpikeRaster(matrix)
 figure
-  contour(matrix)
-  title('Spikes for one movement measured in one electrode over 100 trials')
-  ylabel('Trials')
-  xlabel('Time (ms)')
-  
-  %%
-  dt = 2; %delta t = 1ms, over which spike density will be evaluated
-  % for the 100 trials for movement 1
-  t = 1;
-%   spiketimes = zeros(100,30);
-  for i = 1:length(trial(:,1))
-      %for electrode(neuron) 1 and trial i for all the timesteos
-      cell = trial(i,1).spikes(1,:);
-      timelength = length(cell);
-%       spike_count = zeros(100,timelength);
-      
-%       spiketimes(i,1:length(find(cell))) = find(cell);
-%       psth(
-    spikes_total = spikes_total + cell;
-%       while t<timelength
-%           for t = t:t+dt
-%               spike_count(i,t) = sum(cell(t:t+dt));
-% %               t = t+dt;
-%           end
-%       end
-      
-  end
+contour(matrix)
+title('Spikes for one movement measured in one electrode over 100 trials')
+ylabel('Trials')
+xlabel('Time (ms)')
 
-
+%% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
+%movement number
+movement = 8;
+%for all neurons do this
+for j = 1:96
+    
+    spikes_total = zeros(1,750);
+    %for all trials and movement 1
+    for i = 1:length(trial(:,movement))
+        %for electrode(neuron) 1 and trial i for all the timesteos
+        cell = trial(i,movement).spikes(j,:);
+        timelength = length(cell);
+        l_difference = length(spikes_total)-length(cell);
+        spikes_total = spikes_total + [cell,zeros(1,l_difference)];
+        
+    end
+    
+    spikes_total = spikes_total/100;
+    % histogram(713,spikes_total);
+    plot(1:750,smooth(spikes_total))
+    title(['Movement ',num2str(movement),', Electrode ',num2str(j)])
+    pause(0.3)
+end
 % psth(
-  
-  
+
+
+
+%% Plot hand position for different trials
+%% total plotting
+hfig = figure('Toolbar','none',...
+              'Menubar', 'none',...
+              'Name','Tuning curves for all 96 electrodes',...
+              'NumberTitle','off',...
+              'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
+movement = 3;
+for i = 1:100
+    %     for movement = 1:8
+%     figure
+    handpos = trial(i,movement).handPos; %pick spikes out of trial i for
+    %electrode (neuron) 1 for all the timesteps
+    cell = trial(i,1).spikes;
+    hold off
+    subplot(4,1,2)
+    plot(handpos(1,:))
+    hold on
+    plot(handpos(2,:))
+    plot(handpos(3,:))
+    xlim([0 900])
+    legend('x','y','z')
+    hold off
+    title(['Movement ',num2str(movement),', Trial ',num2str(i)])
+    ylabel('Coordinate magnitude')
+    
+    
+    subplot(4,1,3)
+    angle = [];
+    timelength = length(handpos);
+    %cos theta = a dot b /|a||b|
+    for a = 1:timelength-1
+        u = [handpos(1,a) handpos(2,a)];
+        v = [handpos(1,a+1) handpos(2,a+1)];
+        angle(a) = acos(dot(u,v)/(norm(u)*norm(v)));
+    end
+    angle = (180/pi)*angle;
+    plot(angle)
+    title('Angle between vector u and v')
+    ylabel('Angle')
+    xlabel('Time (ms)')
+    
+    subplot(4,1,4)
+    plot(handpos(1,:),handpos(2,:))
+    
+    title(['Movement ',num2str(movement),', Trial ',num2str(i)])
+    xlabel('x coordinate')
+    ylabel('y coordinate')
+    xlim([-70 70])
+    ylim([-70 70])
+    ax = gca;
+    ax.XAxisLocation = 'origin';
+    ax.YAxisLocation = 'origin';
+    
+    subplot(4,1,1)
+    contour(cell)
+    title(['Electrodes spikes over time, Trial: ', num2str(i)])
+    xlim([0 900])
+    ylabel('Electrode index')
+    
+         pause(0.05)
+    %     end
+end
+
+
+%% plot x against y
+movement = 1;
+
+xmap = zeros(100,750);
+for i = 1:length(trial(:,movement)) % for the 100 trials for movement 1
+    handpos = trial(i,movement).handPos; %pick spikes out of trial i for
+    %electrode (neuron) 1 for all the timesteps
+    
+    t = length(handpos(1,:));
+    plot(handpos(1,:),handpos(2,:))
+    
+    title(['Movement ',num2str(movement),', Trial ',num2str(i)])
+    xlabel('x coordinate')
+    ylabel('y coordinate')
+    xlim([-70 70])
+    ylim([-70 70])
+    ax = gca;
+    ax.XAxisLocation = 'origin';
+    ax.YAxisLocation = 'origin';
+    
+    pause(0.1)
+    
+    xmap(i,1:length(handpos(1,:))) = handpos(1,:);
+    ymap(i,1:length(handpos(2,:))) = handpos(2,:);
+    zmap(i,1:length(handpos(3,:))) = handpos(3,:);
+end
+
+
+%% plot x,y and z coordinate over time for all trials
+figure
+subplot(1,3,1)
+surf(xmap)
+shading interp
+axis square
+title('x position over 100 trials')
+subplot(1,3,2)
+surf(ymap)
+shading interp
+axis square
+title('y position over 100 trials')
+subplot(1,3,3)
+surf(zmap)
+shading interp
+axis square
+title('z position over 100 trials')
+
+%% finding angle
+
+%finding angle
+movement = 3;
+
+for i = 1:length(trial(:,movement)) % for the 100 trials for movement 1
+    handpos = trial(i,movement).handPos; %pick spikes out of trial i for
+    %electrode (neuron) 1 for all the timesteps
+    angle = [];
+    timelength = length(handpos);
+    %cos theta = a dot b /|a||b|
+    for a = 1:timelength-1
+        x = [handpos(1,a) handpos(1,a+1)];
+        y = [handpos(2,a) handpos(2,a+1)];
+        angle(a) = acos(dot(x,y)/(norm(x)*norm(y)));
+        
+    end
+    angle = (180/pi)*angle;
+    plot(angle)
+    pause(0.2)
+    
+end
+
+%% tuning curve
+hfig = figure('Toolbar','none',...
+              'Menubar', 'none',...
+              'Name','Tuning curves for all 96 electrodes',...
+              'NumberTitle','off',...
+              'IntegerHandle','off');
+for j = 1:96
+    spikes_total = zeros(8,975);
+    %for all movements
+    for movement = 1:8
+        %for all trials
+        for i = 1:length(trial(:,movement))
+            %for electrode(neuron) 1 and trial i for all the timesteos
+            cell = trial(i,movement).spikes(j,:);
+            timelength = length(cell);
+            l_difference = length(spikes_total)-length(cell);
+            spikes_total(movement,:) = spikes_total(movement,:) + [cell,zeros(1,l_difference)];
+            
+        end
+        
+        
+    end
+    
+    %spikes are averaged over the number of trials (100)
+    spikes_total = spikes_total/100;
+    %transpose matrix
+    spikes_total = spikes_total';
+    % calculate average spiking rate for specific electrode cell over time (for
+    % one movement, for one electrode), this yields avergae spiking rate in
+    % units of spikes/ms/trial
+    avg_spikes = mean(spikes_total);
+    %calculate std of spikes over time
+    std_spikes = std(spikes_total);
+    %plot errorbar
+%     subplot(2,1,1)
+%     errorbar(avg_spikes,std_spikes)
+%     title(['Tuning curve for electrode ',num2str(j)])
+%     ylabel('Spike rate (# of spikes/ms/trial)')
+%     xlabel('Preferred direction')
+%     ylim([0 0.1])
+% xlim([1 8])
+%     subplot(2,1,2)
+%     plot(avg_spikes)
+%     title(['Tuning curve for electrode ',num2str(j)])
+%     ylabel('Spike rate (# of spikes/ms/trial)')
+%     xlabel('Preferred direction')
+%     ylim([0 0.1])
+% xlim([1 8])
+%     pause(0.2)
+
+subplot(10,10,j)
+    errorbar(avg_spikes,std_spikes)
+    title(num2str(j))
+    ylim([0 0.1])
+    xlim([1 8])
+    
+end
+
+
+
