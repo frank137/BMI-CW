@@ -44,9 +44,8 @@ xlabel('Time (ms)')
 %% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
 %movement number
 movement = 8;
-%for all neurons do this
-for j = 1:96
-    
+%for all electrode do this
+for j = 1
     spikes_total = zeros(1,750);
     %for all trials and movement 1
     for i = 1:length(trial(:,movement))
@@ -58,14 +57,25 @@ for j = 1:96
         
     end
     
-    spikes_total = spikes_total/100;
+%     spikes_total = spikes_total/100;
     % histogram(713,spikes_total);
-    plot(1:750,smooth(spikes_total))
-    title(['Movement ',num2str(movement),', Electrode ',num2str(j)])
+    
+    %plot(1:750,(spikes_total))
+    bar(spikes_total(:,:))
+title({['Movement ',num2str(movement),', Electrode ',num2str(j)];['with window of ',num2str(1),'ms']})
+ylabel('Spike density (spikes/ms/trial)')
+xlabel('Time(ms)')
+    
     pause(0.3)
 end
 % psth(
-
+%% 
+j= 1;
+for i = 1:5:length(cell)
+cell2(j) = sum(cell(i:i+4));
+j = j+1
+i
+end
 
 
 %% Plot hand position for different trials
