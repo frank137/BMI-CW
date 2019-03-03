@@ -4,6 +4,8 @@ load monkeydata_training.mat
 
 trial1 = [trial(1,1).spikes];
 
+
+%%
 [Units,T] = size(trial1);
 
 
