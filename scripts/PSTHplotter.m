@@ -105,8 +105,9 @@ hfig = figure('Toolbar','none',...
         end
         
     end
-    linkaxes(ax(:),'y')
+    
     if plot_option == 2
+        linkaxes(ax(:),'y')
         suptitle(['PSTHs for movement ', num2str(movement),' with window of ',num2str(window),'ms']);
     end
 
