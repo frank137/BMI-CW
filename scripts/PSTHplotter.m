@@ -1,21 +1,24 @@
-function [] = PSTHplotter(trial,movement,window,plot_option)
+function [] = PSTHplotter(trial,movement,,electrode,window,plot_option)
 %% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
 %movement number
 %movement = 3;
 %window = 300; %time window over which spikes will be avergaed
 
-%initialise max_cell2
-max_cell2 = 0;
-%initialise l2, later on length of cell2
-l2 = 0;
-%for all electrode do this
-hfig = figure('Toolbar','none',...
-    'Menubar', 'none',...
-    'Name','Peri-stimulus Time Histogram plotter',...
-    'NumberTitle','off',...
-    'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
 
-    for j = 1:96
+for movement = movement
+    
+    %initialise max_cell2
+    max_cell2 = 0;
+    %initialise l2, later on length of cell2
+    l2 = 0;
+    %for all electrode do this
+    hfig = figure('Toolbar','none',...
+        'Menubar', 'none',...
+        'Name','Peri-stimulus Time Histogram plotter',...
+        'NumberTitle','off',...
+        'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
+    
+    for j = electrode
         %initialise total number of spikes
         spikes_total = zeros(1,800);
         %for all trials and movement 1
@@ -101,7 +104,7 @@ hfig = figure('Toolbar','none',...
             end
             title(['Electrode ', num2str(j)])
             
-%             suptitle(['PSTHs for movement ', num2str(movement),' with window of ',num2str(window),'ms']);
+            %             suptitle(['PSTHs for movement ', num2str(movement),' with window of ',num2str(window),'ms']);
         end
         
     end
@@ -110,6 +113,6 @@ hfig = figure('Toolbar','none',...
         linkaxes(ax(:),'y')
         suptitle(['PSTHs for movement ', num2str(movement),' with window of ',num2str(window),'ms']);
     end
-
+end
 end
 

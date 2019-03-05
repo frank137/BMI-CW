@@ -105,8 +105,8 @@ hfig = figure('Toolbar','none',...
     'Name','Tuning curves for all 96 electrodes',...
     'NumberTitle','off',...
     'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
-movement = 3;
-for i = 1:100
+for movement = 6
+for i = 1
     %     for movement = 1:8
     %     figure
     handpos = trial(i,movement).handPos; %pick spikes out of trial i for
@@ -162,8 +162,12 @@ for i = 1:100
     %     end
 end
 
+end
+
 
 %% plot x against y
+
+figure
 movement = 1;
 
 xmap = zeros(100,750);
