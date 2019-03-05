@@ -1,4 +1,4 @@
-function [] = PSTHplotter(trial,movement,,electrode,window,plot_option)
+function [] = PSTHplotter(trial,movement,electrode,window,plot_option)
 %% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
 %movement number
 %movement = 3;

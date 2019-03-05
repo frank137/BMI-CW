@@ -1,9 +1,20 @@
-function [] = PSTHdifference(trial,window,movement1,movement2,plot_option,j)
+function [] = PSTHdifference(trial,window,movement1,movement2,plot_option,electrode)
 %% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
-%movement number
-%movement = 1:8;
-%window = 300; %time window over which spikes will be avergaed
-
+% This function computes the difference in PSTH for two movement and a
+% given set of electrodes
+%the inputs go as follow:
+%trial: trial data variable loaded when you load monkeydata_training.mat
+%window: your time window over which spike rate denisty will be calculated
+% Movement 1 & 2: selected movement which difference will be taken
+% plot_option = 1 or 2, plot option 1 will show a full screen PSTH for
+% every electrode and will show the next electrode upon pressing any key.
+% option 2 will show all 96 electrodes plots in a figure with 96 subplots
+%electrode can be a vector of any size between 1 and 96 giving the index of
+%the electrodes the user wishes to see
+%
+% Please note these PSTH compute the average spike rate over time
+% (spikes/ms) summed over all the trials, NOT averaged over trials, though
+% this could be easily implemented if desired.
 movement = [movement1 movement2];
 %initialise max_cell2
 max_cell2 = 0;
@@ -17,7 +28,7 @@ hfig = figure('Toolbar','none',...
     'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
 spikes_overall = zeros(2, 800);
 
-for j= j
+for j= electrode
     %initialise total number of spikes
     spikes_total = zeros(1,800);
     %for all trials and chosen movement
@@ -106,7 +117,10 @@ for j= j
         ax(j) = subplot(10,10,j);
         %plot bar plot with x axis centered at the middle of each window, only
         %plot correspondent spikes_total values as rest is 0s
+        bar(window*(1-0.5:l2-0.5),spikes_overall(1,1:l2)),1)
         hold on
+        bar(window*(1-0.5:l2-0.5),spikes_overall(2,1:l2)),1)
+        
         bar(window*(1-0.5:l2-0.5),spikes_diff(1:l2),1)
         %errorbar(window*(1-0.5:l2-0.5),spikes_avg(1:l2),spikes_std(1:l2))
         grid on
