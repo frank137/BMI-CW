@@ -81,10 +81,30 @@ end
 % PSTH
 close all
 
+el_cell = 1;
+ang = 1;
+dt = 20; %ms
+padded_size = 800; %ms to zero pad
+
 h1 = figure(1);
 h1.Units = 'normalized';
 h1.Position = [.3 .5 .7 .4];
 
+bins_psth = floor(padded_size/dt);
+ro_psth = zeros(bins_psth,dt,num_trials);
+for i = 1:num_trials
+    
+    x = trial(i,ang).spikes(el_cell,:);
+    tot_ms = size(x,2);
+    x = [x, zeros(1,padded_size-tot_ms)];
+    
+    for idx = 0:bins_psth-1
+       ro_psth(idx+1,:,i) = x(idx*dt+1:(idx+1)*dt);     
+    end
+    
+end
 
+density = mean(mean(ro_psth,3),2)/dt; % activity per ms
 
-
+plot(0:dt:padded_size-1, density)
+title(['density for all tirals angle ',num2str(ang),', cell ',num2str(el_cell)])
