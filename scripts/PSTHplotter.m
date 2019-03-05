@@ -80,7 +80,9 @@ for movement = movement
             end
             
             title({'PSTH for';['Movement ',num2str(movement),', Electrode ',num2str(j)];['with window of ',num2str(window),'ms']})
-            ylabel('Spike density (spikes/ms/trial)')
+            %Note we are not omputing the spike density but just the number
+            %of spikes in a period 'window' and summed over all the trials
+            ylabel('Spike density (#spikes)')
             xlabel('Time(ms)')
             
             
