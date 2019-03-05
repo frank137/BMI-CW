@@ -13,10 +13,10 @@ for j = 1:100
     curr_pos = trial(j,movement).handPos;
     l_diff = length(handpos_tt)-length(curr_pos);
     handpos_tt = handpos_tt+[curr_pos,zeros(3,l_diff)];
-    speed_tt = speed_tt +[speedplot(trial,movement,j,0),zeros(3,l_diff)];
+%     speed_tt = speed_tt +[speedplot(trial,movement,j,0),zeros(3,l_diff)];
 end
 handpos_tt = handpos_tt/100;
-speed_tt = speed_tt/100;
+% speed_tt = speed_tt/100;
 
 % Plot average movement over 100 trials
 hold off
