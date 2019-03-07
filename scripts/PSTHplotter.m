@@ -4,7 +4,7 @@ function [] = PSTHplotter(trial,movement,electrode,window,plot_option)
 %movement = 3;
 %window = 300; %time window over which spikes will be avergaed
 
-
+PSTHstorage = [];
 for movement = movement
     
     %initialise max_cell2
@@ -61,6 +61,7 @@ for movement = movement
             clear cell2
         end
         
+        
         %spikes_total = spikes_total/100;
         
         %plot option 1 is an animation, so plots will be coming on top of each
@@ -80,7 +81,9 @@ for movement = movement
             end
             
             title({'PSTH for';['Movement ',num2str(movement),', Electrode ',num2str(j)];['with window of ',num2str(window),'ms']})
-            ylabel('Spike density (spikes/ms/trial)')
+            %Note we are not omputing the spike density but just the number
+            %of spikes in a period 'window' and summed over all the trials
+            ylabel('Spike density (#spikes)')
             xlabel('Time(ms)')
             
             

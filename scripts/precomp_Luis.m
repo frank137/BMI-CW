@@ -301,6 +301,7 @@ suptitle('Tuning curve for all 96 electrodes, x-axis is the movement and y axis 
 movement = 1;
 for i = 1:100
     handpos = trial(i,movement).handPos; %pick spikes out of trial i for
+    %Calculate speed
     for a = 1:length(handpos)-1
         dposdt(:,a) = handpos(:,a+1)-handpos(:,a);
     end

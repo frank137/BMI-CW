@@ -1,5 +1,8 @@
 function [] = PSTHdifference(trial,window,movement1,movement2,plot_option,electrode)
 %% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
+%Example: PSTHdifference(trial,50,1,6,2,1:96) plot 50ms windows, for
+%movements 1 and 6, using plotting option 2 and seeing all electrodes.
+
 % This function computes the difference in PSTH for two movement and a
 % given set of electrodes
 %the inputs go as follow:
@@ -12,8 +15,8 @@ function [] = PSTHdifference(trial,window,movement1,movement2,plot_option,electr
 %electrode can be a vector of any size between 1 and 96 giving the index of
 %the electrodes the user wishes to see
 %
-% Please note these PSTH compute the average spike rate over time
-% (spikes/ms) summed over all the trials, NOT averaged over trials, though
+% Please note these PSTH compute the sum of spikes over a time
+% 'window' over all the trials, NOT averaged over trials, though
 % this could be easily implemented if desired.
 movement = [movement1 movement2];
 %initialise max_cell2
