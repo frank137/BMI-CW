@@ -4,7 +4,7 @@ function [] = PSTHplotter(trial,movement,electrode,window,plot_option)
 %movement = 3;
 %window = 300; %time window over which spikes will be avergaed
 
-
+PSTHstorage = [];
 for movement = movement
     
     %initialise max_cell2
@@ -60,6 +60,7 @@ for movement = movement
             %delete cell2 in case of any length mismatch between trials
             clear cell2
         end
+        
         
         %spikes_total = spikes_total/100;
         
