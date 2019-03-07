@@ -1,5 +1,5 @@
 %%% Team Members: WRITE YOUR TEAM MEMBERS' Francesco Guagliardo, Luis
-%%% Chaves Rodriguez, Daniele Olmeda
+%%% Chaves Rodriguez, Daniele Olmeda, Arun Paul
 %%% BMI Spring 2015 (Update 17th March 2015)
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
