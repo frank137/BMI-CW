@@ -1,10 +1,10 @@
-function [] = PSTHplotter(trial,movement,electrode,window,plot_option)
+function PSTHstorage = PSTHplotter(trial,movement,electrode,window,plot_option)
 %% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
 %movement number
 %movement = 3;
 %window = 300; %time window over which spikes will be avergaed
 
-PSTHstorage = [];
+PSTHstorage = zeros(max(electrode),800);
 for movement = movement
     
     %initialise max_cell2
@@ -59,7 +59,9 @@ for movement = movement
             spikes_total = spikes_total + [cell2,zeros(1,l_difference)];
             %delete cell2 in case of any length mismatch between trials
             clear cell2
+            PSTHstorage(j,:) = spikes_total;
         end
+        
         
         
         %spikes_total = spikes_total/100;
