@@ -1,28 +1,24 @@
-function PSTHstorage = PSTHplotter(trial,movement,electrode,window,plot_option)
+function [] = PSTHplotter(trial,movement,electrode,window,plot_option,trialvector)
 %% Plot a peri-stimulus time histogram (psth) or spikes as spike desnity over time
 %movement number
 %movement = 3;
 %window = 300; %time window over which spikes will be avergaed
 
-PSTHstorage = zeros(max(electrode),800);
+
+
 for movement = movement
     
     %initialise max_cell2
     max_cell2 = 0;
     %initialise l2, later on length of cell2
     l2 = 0;
-    %for all electrode do this
-    hfig = figure('Toolbar','none',...
-        'Menubar', 'none',...
-        'Name','Peri-stimulus Time Histogram plotter',...
-        'NumberTitle','off',...
-        'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
+    
     
     for j = electrode
         %initialise total number of spikes
         spikes_total = zeros(1,800);
         %for all trials and movement 1
-        for i = 1:100
+        for i = trialvector
             %load spikes from electrode j for trial i and for selected movement
             cell = trial(i,movement).spikes(j,:);
             %get time length of spike measurement
@@ -58,58 +54,68 @@ for movement = movement
             %add current cell2 (padded with zeros on the right to spikes_total
             spikes_total = spikes_total + [cell2,zeros(1,l_difference)];
             %delete cell2 in case of any length mismatch between trials
+            
             clear cell2
-            PSTHstorage(j,:) = spikes_total;
         end
-        
+        %100x96 matrix 100 trials for movement1, 100 for 2...
         
         
         %spikes_total = spikes_total/100;
         
+        
         %plot option 1 is an animation, so plots will be coming on top of each
         %other for different electrodes
-        if plot_option == 1
-            %plot bar plot with x axis centered at the middle of each window, only
-            %plot correspondent spikes_total values as rest is 0s
-            bar(window*(1-0.5:l2-0.5),spikes_total(1:l2),1)
-            grid on
-            %if window is too short,only plot xticks in 20s as otherwise xaxis may
-            %be impossible to visualise
-            if window<20
-                xticks(20*(0:l2))
-            else
-                %if window is sufficiently large do ticks at every window edge
-                xticks(window*(0:l2))
+        if plot_option == 1 || plot_option ==2
+            hfig = figure('Toolbar','none',...
+                'Menubar', 'none',...
+                'Name','Peri-stimulus Time Histogram plotter',...
+                'NumberTitle','off',...
+                'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
+            if plot_option == 1
+                
+                %plot bar plot with x axis centered at the middle of each window, only
+                %plot correspondent spikes_total values as rest is 0s
+                bar(window*(1-0.5:l2-0.5),spikes_total(1:l2),1)
+                grid on
+                %if window is too short,only plot xticks in 20s as otherwise xaxis may
+                %be impossible to visualise
+                if window<20
+                    xticks(20*(0:l2))
+                else
+                    %if window is sufficiently large do ticks at every window edge
+                    xticks(window*(0:l2))
+                end
+                
+                title({'PSTH for';['Movement ',num2str(movement),', Electrode ',num2str(j)];['with window of ',num2str(window),'ms']})
+                %Note we are not omputing the spike density but just the number
+                %of spikes in a period 'window' and summed over all the trials
+                ylabel('Spike density (#spikes)')
+                xlabel('Time(ms)')
+                
+                
+                %default pause
+                pause(0.3)
+                
+                
+            elseif plot_option == 2
+                
+                ax(j) = subplot(10,10,j);
+                %plot bar plot with x axis centered at the middle of each window, only
+                %plot correspondent spikes_total values as rest is 0s
+                bar(window*(1-0.5:l2-0.5),spikes_total(1:l2),1)
+                grid on
+                %if window is too short,only plot xticks in 100s as otherwise xaxis may
+                %be impossible to visualise
+                if window<200
+                    xticks(200*(0:l2))
+                else
+                    %if window is sufficiently large do ticks at every window edge
+                    xticks(window*(0:l2))
+                end
+                title(['Electrode ', num2str(j)])
+                
+                %             suptitle(['PSTHs for movement ', num2str(movement),' with window of ',num2str(window),'ms']);
             end
-            
-            title({'PSTH for';['Movement ',num2str(movement),', Electrode ',num2str(j)];['with window of ',num2str(window),'ms']})
-            %Note we are not omputing the spike density but just the number
-            %of spikes in a period 'window' and summed over all the trials
-            ylabel('Spike density (#spikes)')
-            xlabel('Time(ms)')
-            
-            
-            %default pause
-            pause(0.3)
-            
-            
-        elseif plot_option == 2
-            ax(j) = subplot(10,10,j);
-            %plot bar plot with x axis centered at the middle of each window, only
-            %plot correspondent spikes_total values as rest is 0s
-            bar(window*(1-0.5:l2-0.5),spikes_total(1:l2),1)
-            grid on
-            %if window is too short,only plot xticks in 100s as otherwise xaxis may
-            %be impossible to visualise
-            if window<200
-                xticks(200*(0:l2))
-            else
-                %if window is sufficiently large do ticks at every window edge
-                xticks(window*(0:l2))
-            end
-            title(['Electrode ', num2str(j)])
-            
-            %             suptitle(['PSTHs for movement ', num2str(movement),' with window of ',num2str(window),'ms']);
         end
         
     end
