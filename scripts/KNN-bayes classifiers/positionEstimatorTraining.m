@@ -12,15 +12,17 @@ function  [modelParameters] = positionEstimatorTraining(trainingData)
 %     training_data(n,k).handPos(d,t) (d = dimension [1-3], t = time)
 
 %
-time_range = 280:480;
+time_range = 1:320;%280:480;
 [data_formatted, labels] = tidy_spikes(trainingData,time_range);
 
+mean_vals = regressor(trainingData);
 
 % Return Value:
 k_knn = 1;
 modelParameters.train_in = data_formatted;
 modelParameters.labels = labels;
 modelParameters.k = k_knn;
+modelParameters.mean_vals = mean_vals;
 
 end
 
@@ -50,5 +52,20 @@ end
 function reduced_dimension_data = red_dim(data_in)
 
 reduced_dimension_data = sum(data_in);
+
+end
+
+function coeff =  regressor(trainingData)
+
+[n,k] = size(trainingData);
+tim = 1000;
+for a = 1:k
+    temp = zeros(2,tim);
+    for t = 1:n
+        size_time = size(trainingData(t,a).handPos,2);
+        temp = temp+[trainingData(t,a).handPos(1:2,:),zeros(2,tim-size_time)];
+    end
+    coeff(a).mean_pos = temp./n;
+end
 
 end
