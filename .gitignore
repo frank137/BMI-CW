@@ -3,3 +3,5 @@
 *.icloud
 scripts/.monkeydata_training.mat.icloud
 scripts/monkeydata_training.mat
+.DS_Store
+.DS_Store
