@@ -104,7 +104,8 @@ for i = 1:num_trials
     
 end
 
-density = mean(mean(ro_psth,3),2)/dt; % activity per ms
+density = mean(mean(ro_psth,3),2); % activity per ms
 
 plot(0:dt:padded_size-1, density)
 title(['density for all tirals angle ',num2str(ang),', cell ',num2str(el_cell)])
+ylabel('density spikes/ms/trial')
