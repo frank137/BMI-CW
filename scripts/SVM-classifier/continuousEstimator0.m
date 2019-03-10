@@ -51,7 +51,37 @@ function [modelParameters] = positionEstimatorTraining(training_data)
   % - modelParameters:
   %     single structure containing all the learned parameters of your
   %     model and which can be used by the "positionEstimator" function.
-  
+  electrode = 1:98;
+
+TR = [];
+TEST = [];
+% label_tr =zeros(800,1);
+% label_test = zeros(800,1);
+label_vecTR =[];label_vecTST =[];
+label_vec1 = zeros(length(training_data),1);
+%meanpath = zeros(2,%time length,8)
+
+for movement = 1:8
+    %    PSTH_training = [PSTH_training;PSTHplotter(trial,movement,electrode,50,0,trials)];
+    %    labelvector1((movement-1)*trials+1:trials*movement) = movement;
+    %    PSTH_test = [PSTH_test;PSTHplotter(trial,movement,electrode,50,0,50+trials)];
+    %    labelvector2((movement-1)*trials+1:trials*movement) = movement;
+    for i = electrode
+        for j = 1:split
+            cell_tr = trainingData(j,movement).spikes(i,:);
+            processed_training(j,i) = sum(cell_tr);
+            label_vec1(j) = movement;
+        end
+        
+    end
+    TR = [TR;processed_training];
+
+    label_vecTR = [label_vecTR;label_vec1];
+
+end
+
+
+Mdl = fitcecoc(TR,label_vecTR);
 end
 
 function [x, y] = positionEstimator(test_data, modelParameters)
@@ -101,6 +131,32 @@ function [x, y] = positionEstimator(test_data, modelParameters)
   
   % - [x, y]:
   %     current position of the hand
+  electrode = 1:98;
+TR = [];
+TEST = [];
+% label_tr =zeros(800,1);
+% label_test = zeros(800,1);
+label_vecTR =[];label_vecTST =[];
+label_vec2 = zeros(length(test_data),1);
+  
+  for movement = 1:8
+    for i = electrode       
+        for j = 1:length(test_data)
+            cell_test = test_data(j,movement).spikes(i,:);
+            processed_test(j,i) = sum(cell_test);
+            label_vec2(j) = movement;
+        end
+    end
+
+    TEST = [TEST;processed_test];
+    label_vecTST = [label_vecTST;label_vec2];
+  end
+
+  predicted_label = predict(Mdl,test_data)
+  
+  [x,y] = Mdl.path(:,1:end)
+  
+  %% next add predicted mean paths based on trained model which give out mean path linked to each label. so for each label give a mean path
    
 end
 

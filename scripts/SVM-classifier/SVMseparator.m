@@ -4,11 +4,12 @@
 %movement will be a different label
 %
 %
+clear all
 electrode = 1:98;
 
 load monkeydata_training.mat
 ix = randperm(length(trial));
-split = 20;
+split = 70;
 trainingData = trial(ix(1:split),:);
 testData = trial(ix(split+1:end),:);
 TR = [];
@@ -51,7 +52,7 @@ Mdl = fitcecoc(TR,label_vecTR);
 %% Verification step
 
 correct = 0;
-for a = 1:400
+for a = 1:length(y)
     if y(a) == label_vecTST(a)
         correct = correct+1;
     end
@@ -59,5 +60,14 @@ end
 heatmap(confusionmat(label_vecTST,y));
 ylabel('True class')
 xlabel('Predicted class')
-
-
+% 
+% figure
+% hold on
+% for movement = 1:8
+%     [X,Y] = perfcurve(label_vecTST,score(:,movement),num2str(movement));
+%     plot(X,Y)
+%     
+% end
+% 
+% legend('Movement 1','Movement 2','Movement 3', 'Movement 4', 'Movement 5','Movement 6', 'Movement 7', 'Movement 8')
+% 
