@@ -80,7 +80,6 @@ figure
 confusionchart(true_lab,knn_lab);
 title(['KNN, accuracy: ',num2str(acc*100),'%, f1 score: ',num2str(f1)])
 %rmpath(genpath(teamName))
-
 %end
 
 % manually calcualte confusion matrix
@@ -115,7 +114,7 @@ s = surf(conf);
 xlabel('Predicted Class')
 ylabel('True Class')
 grid off
-axis([1 5 1 5])
+axis([1 8 1 8])
 view(0,-90)
 title([method, ' Accuracy: ', num2str(acc,2),', F1 score: ',num2str(f1,2)]);
 set(gca,'fontsize', 14);
