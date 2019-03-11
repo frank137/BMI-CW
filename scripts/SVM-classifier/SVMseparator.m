@@ -57,6 +57,7 @@ for a = 1:length(y)
         correct = correct+1;
     end
 end
+
 heatmap(confusionmat(label_vecTST,y));
 ylabel('True class')
 xlabel('Predicted class')
