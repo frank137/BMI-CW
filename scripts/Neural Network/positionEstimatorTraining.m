@@ -1,81 +1,49 @@
+%%% Team Members: Francesco Guagliardo, Luis
+%%% Chaves Rodriguez, Daniele Olmeda, Arun Paul
+%%% KNN implementation
+function  [modelParameters] = positionEstimatorTraining(trainingData)
 
-clear, clc,
-load('monkeydata_training.mat')
-trainingData = trial
-time_range = 1:320;%280:480;
-[data_formatted, labels] = tidy_spikes(trainingData,time_range);
+% Arguments:
+
+% - training_data:
+%     training_data(n,k)              (n = trial id,  k = reaching angle)
+%     training_data(n,k).trialId      unique number of the trial
+%     training_data(n,k).spikes(i,t)  (i = neuron id, t = time)
+%     training_data(n,k).handPos(d,t) (d = dimension [1-3], t = time)
+
+[data_formatted, labels] = tidy_spikes(trainingData);
 
 labels = full(ind2vec(labels'));
 data_formatted = data_formatted';
 
- = data_formatted;
-t = labels;
-
-% Choose a Training Function
-% For a list of all training functions type: help nntrain
-% 'trainlm' is usually fastest.
-% 'trainbr' takes longer but may be better for challenging problems.
-% 'trainscg' uses less memory. Suitable in low memory situations.
-trainFcn = 'trainscg';  % Scaled conjugate gradient backpropagation.
-
 % Create a Pattern Recognition Network
-hiddenLayerSize = 10;
-net = patternnet(hiddenLayerSize, trainFcn);
+net = patternnet(10, 'trainscg');
 
 % Choose Input and Output Pre/Post-Processing Functions
-% For a list of all processing functions type: help nnprocess
 net.input.processFcns = {'removeconstantrows','mapminmax'};
 
 % Setup Division of Data for Training, Validation, Testing
-% For a list of all data division functions type: help nndivision
-net.divideFcn = 'dividerand';  % Divide data randomly
+%net.divideFcn = 'dividerand';  % Divide data randomly
 net.divideMode = 'sample';  % Divide up every sample
-net.divideParam.trainRatio = 70/100;
-net.divideParam.valRatio = 15/100;
-net.divideParam.testRatio = 15/100;
+net.divideParam.trainRatio = 80/100;
+net.divideParam.valRatio = 20/100;
+net.divideParam.testRatio = 0/100;
 
 % Choose a Performance Function
-% For a list of all performance functions type: help nnperformance
-net.performFcn = 'crossentropy';  % Cross-Entropy
-
-% Choose Plot Functions
-% For a list of all plot functions type: help nnplot
-net.plotFcns = {'plotperform','plottrainstate','ploterrhist', ...
-    'plotconfusion', 'plotroc'};
+net.performFcn = 'mae';
 
 % Train the Network
-[net,tr] = train(net,x,t);
+[net,tr] = train(net, data_formatted,labels);
 
-% Test the Network
-y = net(x);
-e = gsubtract(t,y);
-performance = perform(net,t,y)
-tind = vec2ind(t);
-yind = vec2ind(y);
-percentErrors = sum(tind ~= yind)/numel(tind);
-
-% Recalculate Training, Validation and Test Performance
-trainTargets = t .* tr.trainMask{1};
-valTargets = t .* tr.valMask{1};
-testTargets = t .* tr.testMask{1};
-trainPerformance = perform(net,trainTargets,y)
-valPerformance = perform(net,valTargets,y)
-testPerformance = perform(net,testTargets,y)
-
-
-% Plots
-% Uncomment these lines to enable various plots.
-%figure, plotperform(tr)
-%figure, plottrainstate(tr)
-%figure, ploterrhist(e)
-figure, plotconfusion(t,y)
-%figure, plotroc(t,y)
 % Return Value:
+modelParameters.net = net;
+mean_vals = regressor(trainingData);
+modelParameters.mean_vals = mean_vals;
 
-%end
+end
 
 % format the data in a way
-function [data_formatted, labels] = tidy_spikes(data_to_format,range)
+function [data_formatted, labels] = tidy_spikes(data_to_format)
 [n,k] = size(data_to_format);
 [i,t] = size(data_to_format(1,1).spikes);
 
@@ -87,7 +55,7 @@ count = 1;
 for a = 1:k
     for t = 1:n % number of trials
         for el = 1:i
-            data_formatted(count,el) = red_dim(data_to_format(t,a).spikes(el,range));
+            data_formatted(count,el) = red_dim(data_to_format(t,a).spikes(el,:));
         end
         labels(count,1) = a;
         count = count +1;
@@ -103,3 +71,17 @@ reduced_dimension_data = sum(data_in);
 
 end
 
+function coeff =  regressor(trainingData)
+
+[n,k] = size(trainingData);
+tim = 1000;
+for a = 1:k
+    temp = zeros(2,tim);
+    for t = 1:n
+        size_time = size(trainingData(t,a).handPos,2);
+        temp = temp+[trainingData(t,a).handPos(1:2,:),zeros(2,tim-size_time)];
+    end
+    coeff(a).mean_pos = temp./n;
+end
+
+end
