@@ -11,9 +11,10 @@ data_formatted = data_formatted';
 % 'trainlm' is usually fastest.
 % 'trainbr' takes longer but may be better for challenging problems.
 % 'trainscg' uses less memory. Suitable in low memory situations.
-
+hiddenLayerSize = 10;
+trainFcn = 'trainscg';
 % Create a Pattern Recognition Network
-net = patternnet(10, 'trainscg'); %hiddenLayerSize = 10 and trainFcn = 'trainscg' scaled conjugate gradient backpropagation.
+net = patternnet(hiddenLayerSize, trainFcn); %hiddenLayerSize = 10 and trainFcn = 'trainscg' scaled conjugate gradient backpropagation.
 
 % Choose Input and Output Pre/Post-Processing Functions
 % For a list of all processing functions type: help nnprocess

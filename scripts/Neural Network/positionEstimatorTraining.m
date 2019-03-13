@@ -1,15 +1,24 @@
 %%% Team Members: Francesco Guagliardo, Luis
 %%% Chaves Rodriguez, Daniele Olmeda, Arun Paul
 %%% KNN implementation
+
+% RSME is 31.6992
+% accuracy is 0.74375
+% 20 layers
+%trainscg
+
+% RSME is 22.6437
+% accuracy is 0.975
+% 80 layers
+%trainlm
+
+% RSME is 19.785
+% accuracy is 0.9875
+% 30 layers
+%trainbr
+
+
 function  [modelParameters] = positionEstimatorTraining(trainingData)
-
-% Arguments:
-
-% - training_data:
-%     training_data(n,k)              (n = trial id,  k = reaching angle)
-%     training_data(n,k).trialId      unique number of the trial
-%     training_data(n,k).spikes(i,t)  (i = neuron id, t = time)
-%     training_data(n,k).handPos(d,t) (d = dimension [1-3], t = time)
 
 [data_formatted, labels] = tidy_spikes(trainingData);
 
@@ -17,7 +26,7 @@ labels = full(ind2vec(labels'));
 data_formatted = data_formatted';
 
 % Create a Pattern Recognition Network
-net = patternnet(10, 'trainscg');
+net = patternnet(33, 'trainbr');
 
 % Choose Input and Output Pre/Post-Processing Functions
 net.input.processFcns = {'removeconstantrows','mapminmax'};

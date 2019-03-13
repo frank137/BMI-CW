@@ -5,7 +5,7 @@
 % "positionEstimator" to decode the trajectory.
 
 %function RMSE = testFunction_for_students_MTb(teamName)
-clear, clc, close all
+clear, close all
 load monkeydata_training.mat
 
 % Set random number generator
@@ -18,21 +18,21 @@ ix = randperm(length(trial));
 trainingData = trial(ix(1:80),:);
 testData = trial(ix(81:end),:);
 
-fprintf('Testing the continuous position estimator...')
+%fprintf('Testing the continuous position estimator...')
 
 meanSqError = 0;
 n_predictions = 0;
 
-figure
-hold on
-axis square
-grid
+% figure
+% hold on
+% axis square
+% grid
 
 % Train Model
 modelParameters = positionEstimatorTraining(trainingData);
 count = 1;
 for tr=1:size(testData,1)
-    display(['Decoding block ',num2str(tr),' out of ',num2str(size(testData,1))]);
+%     display(['Decoding block ',num2str(tr),' out of ',num2str(size(testData,1))]);
     pause(0.001)
     for direc=1:8%randperm(8)
         decodedHandPos = [];
@@ -60,62 +60,38 @@ for tr=1:size(testData,1)
             
         end
         n_predictions = n_predictions+length(times);
-        hold on
-        plot(decodedHandPos(1,:),decodedHandPos(2,:), 'r');
-        plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
+%         hold on
+%         plot(decodedHandPos(1,:),decodedHandPos(2,:), 'r');
+%         plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
         
-%         % create confusion matrix
-%         true_lab(count) = direc;
-%         knn_lab(count) = newParameters.test_label;
-%         count = count + 1;
+         % create confusion matrix
+         true_lab(count) = direc;
+         NN_lab(count) = newParameters.label;
+         count = count + 1;
     end
 end
 
-legend('Decoded Position', 'Actual Position')
+% legend('Decoded Position', 'Actual Position')
 
-RMSE = sqrt(meanSqError/n_predictions)
-% figure
-% [acc, f1, conf_mat] = calc_conf(true_lab, knn_lab)
-% 
-% confusionchart(true_lab,knn_lab);
-% title(['KNN, accuracy: ',num2str(acc*100),'%, f1 score: ',num2str(f1)])
+RMSE = sqrt(meanSqError/n_predictions);
+display(['RSME is ', num2str(RMSE)]);
+
 %rmpath(genpath(teamName))
 %end
 
-% manually calcualte confusion matrix
-function [acc, f1, conf_mat] = calc_conf(original, predicted )
-class_numb = max(original);
-conf_mat = zeros(class_numb);
-for i = 1:class_numb
-    for j = 1:class_numb
-        temp = (original==i & predicted==j);
-        conf_mat(i,j) = sum(temp);
+conf_mat = confusionmat(true_lab, NN_lab);
+
+figure;
+heatmap(conf_mat);
+ylabel('True class');
+xlabel('Predicted class');
+
+correct = 0;
+for a = 1:length(true_lab)
+    if true_lab(a) == NN_lab(a)
+        correct = correct+1;
     end
 end
+accuracy = correct/length(true_lab);
+display(['accuracy is ',num2str(accuracy)]);
 
-for c = 1:class_numb
-    tp(c) = conf_mat(c,c);
-    fp(c) = sum(conf_mat(:,c))-tp(c);
-    fn(c) = sum(conf_mat(c,:))-tp(c);
-    tn(c) = sum(conf_mat(:))-tp(c)-fp(c)-fn(c);
-end
-p = tp+fn;
-n = fp+tn;
-N = n+p;
-Recall = tp./p; % sensitivity
-Precision = tp./(tp+fp);
-f1=mean(( 2*(Recall.*Precision) ) ./ ((Precision+Recall) ));
-acc = sum(tp./N);
-end
-
-% manual plot confusion chart
-function plot_confusion(acc, f1, conf,method)
-s = surf(conf);
-xlabel('Predicted Class')
-ylabel('True Class')
-grid off
-axis([1 8 1 8])
-view(0,-90)
-title([method, ' Accuracy: ', num2str(acc,2),', F1 score: ',num2str(f1,2)]);
-set(gca,'fontsize', 14);
-end
