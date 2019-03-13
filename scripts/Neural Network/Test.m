@@ -18,21 +18,27 @@ ix = randperm(length(trial));
 trainingData = trial(ix(1:80),:);
 testData = trial(ix(81:end),:);
 
-%fprintf('Testing the continuous position estimator...')
+fprintf('Testing the continuous position estimator...')
 
 meanSqError = 0;
 n_predictions = 0;
 
-% figure
-% hold on
-% axis square
-% grid
-
+figure
+hold on
+axis square
+grid
+% NNmodels = {'trainlm';'trainbr';'trainbfg';'traincgb';'traincgf';'traincgp';...
+%     'traingd';'traingda';'traingdm';'traingdx';'trainoss';'trainrp';...
+%     'trainscg';'trainb';'trainc';'trainr';'trains'};
+%for i = 1:length(NNmodels)
 % Train Model
-modelParameters = positionEstimatorTraining(trainingData);
+tic
+%     meanSqError = 0;
+%     n_predictions = 0;
+modelParameters = positionEstimatorTraining(trainingData); %positionEstimatorTraining(trainingData, NNmodels{i})
 count = 1;
 for tr=1:size(testData,1)
-%     display(['Decoding block ',num2str(tr),' out of ',num2str(size(testData,1))]);
+    %     display(['Decoding block ',num2str(tr),' out of ',num2str(size(testData,1))]);
     pause(0.001)
     for direc=1:8%randperm(8)
         decodedHandPos = [];
@@ -60,20 +66,20 @@ for tr=1:size(testData,1)
             
         end
         n_predictions = n_predictions+length(times);
-%         hold on
-%         plot(decodedHandPos(1,:),decodedHandPos(2,:), 'r');
-%         plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
+        hold on
+        plot(decodedHandPos(1,:),decodedHandPos(2,:), 'r');
+        plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
         
-         % create confusion matrix
-         true_lab(count) = direc;
-         NN_lab(count) = newParameters.label;
-         count = count + 1;
+        % create confusion matrix
+        true_lab(count) = direc;
+        NN_lab(count) = newParameters.label;
+        count = count + 1;
     end
 end
 
-% legend('Decoded Position', 'Actual Position')
+legend('Decoded Position', 'Actual Position')
 
-RMSE = sqrt(meanSqError/n_predictions);
+RMSE = sqrt(meanSqError/n_predictions); %RMSE(i)
 display(['RSME is ', num2str(RMSE)]);
 
 %rmpath(genpath(teamName))
@@ -92,6 +98,9 @@ for a = 1:length(true_lab)
         correct = correct+1;
     end
 end
-accuracy = correct/length(true_lab);
+accuracy = correct/length(true_lab); %accuracy(i)
 display(['accuracy is ',num2str(accuracy)]);
+time = toc/60
+%disp(['for ', NNmodels{i}, ', RSME is ', num2str(RMSE(i)), ', accuracy is ', num2str(accuracy(i)), ' and time is ', num2str(time(i)/60)])
+%end
 

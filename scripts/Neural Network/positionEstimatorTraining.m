@@ -18,7 +18,7 @@
 %trainbr
 
 
-function  [modelParameters] = positionEstimatorTraining(trainingData)
+function  [modelParameters] = positionEstimatorTraining(trainingData) %(trainingData, NNmodel)
 
 [data_formatted, labels] = tidy_spikes(trainingData);
 
@@ -26,7 +26,7 @@ labels = full(ind2vec(labels'));
 data_formatted = data_formatted';
 
 % Create a Pattern Recognition Network
-net = patternnet(33, 'trainbr');
+net = patternnet(30, 'trainbr'); %patternnet(30, NNmodel);
 
 % Choose Input and Output Pre/Post-Processing Functions
 net.input.processFcns = {'removeconstantrows','mapminmax'};
