@@ -53,19 +53,28 @@ TEST = [];
 % label_test = zeros(800,1);
 label_vecTST =[];
 label_vec2 = zeros(length(test_data),1);
+up_time = 380;
+if length(test_data.spikes(1,:))<up_time
+    ins_time = length(test_data.spikes(1,:));
+else
+    ins_time = up_time;
+end
 
-    for i = electrode       
-            cell_test = test_data.spikes(i,:);
-            processed_test(i) = sum(cell_test);    
-    end   
-    TEST = [TEST;processed_test];
+for i = electrode
+    %use this line if wanna get an estimate for each time point
+    %cell_test = test_data.spikes(i,:);
+    %use this line if you wanna go with the first estimate and that's it
+    cell_test = test_data.spikes(i,1:ins_time);
+    processed_test(i) = sum(cell_test);
+end
+TEST = [TEST;processed_test];
 
 predicted_label = predict(modelParameters.Mdl,TEST);
 
 for movement = 1:8
     if predicted_label == movement
-x = modelParameters.path(1,time,movement);
-y = modelParameters.path(2,time,movement);
+        x = modelParameters.path(1,time,movement);
+        y = modelParameters.path(2,time,movement);
     end
 end
 

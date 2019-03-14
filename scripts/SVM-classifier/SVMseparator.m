@@ -45,7 +45,7 @@ for movement = 1:8
 end
 
 
-Mdl = fitcecoc(TR,label_vecTR);
+Mdl = fitcecoc(TR,label_vecTR,'Learners','svm');
 
 [y,score] = predict(Mdl,TEST);
 

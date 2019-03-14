@@ -1,4 +1,4 @@
-function [modelParameters] = positionEstimatorTraining(training_data,endtime)
+function [modelParameters] = positionEstimatorTraining(training_data,endtime,learner)
 % Arguments:
 
 % - training_data:
@@ -47,7 +47,7 @@ for movement = 1:8
 end
 meanpath = meanpath./length(training_data);
 
-Mdl = fitcecoc(TR,label_vecTR);
+Mdl = fitcecoc(TR,label_vecTR,'Learners',learner);
 
 modelParameters.Mdl = Mdl;
 modelParameters.path = meanpath;
