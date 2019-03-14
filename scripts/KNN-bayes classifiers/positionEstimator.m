@@ -43,12 +43,26 @@ function [x, y, new_param] = positionEstimator(test_data, modelParameters)
 [i,t] = size(test_data(1,1).spikes);
 input_len = size(test_data,1);
 
-time_range = 1:320;%280:480;
-[test_data_formatted, ~] = tidy_spikes(test_data,time_range);
+input_time = size(test_data.spikes,2);
+% up_to = 360;
+% if input_time < up_to
+%     time_range = 1:input_time;%280:480;
+% else
+%     time_range = 1:up_to;%280:480;
+% end
+train_times = 320:20:400;
+up_to = find(train_times==input_time);
+if isempty(up_to)
+    up_to = length(train_times);
+end
+    
+
+%[test_data_formatted, ~] = tidy_spikes(test_data,time_range);
+[test_data_formatted, ~] = tidy_spikes(test_data,1:train_times(up_to));
 label = zeros(size(test_data,1),1);
 
 K = modelParameters.k;
-all_dist = pdist2(test_data_formatted, modelParameters.train_in,'cityblock');
+all_dist = pdist2(test_data_formatted, modelParameters.train_in(:,:,up_to),'cityblock');
 [~, prev_idxs] = sort(all_dist,2);
 %numm_test x K array. Each row contains the indeces of the K shortest
 %distances
@@ -65,7 +79,6 @@ for i = 1:input_len
     
     label(i,1) = class_unique(pred_class_idx);
 end
-
 
 
 x = modelParameters.mean_vals(label).mean_pos(1,t);

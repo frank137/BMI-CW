@@ -57,17 +57,20 @@ for tr=1:size(testData,1)
             decodedHandPos = [decodedHandPos decodedPos];
             
             meanSqError = meanSqError + norm(testData(tr,direc).handPos(1:2,t) - decodedPos)^2;
+            true_lab(count) = direc;
+            knn_lab(count) = newParameters.test_label;
+            count = count + 1;
             
         end
         n_predictions = n_predictions+length(times);
         hold on
-        plot(decodedHandPos(1,:),decodedHandPos(2,:), 'r');
+        plot(decodedHandPos(1,:),decodedHandPos(2,:), 'r','LineWidth',2);
         plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
         
         % create confusion matrix
-        true_lab(count) = direc;
-        knn_lab(count) = newParameters.test_label;
-        count = count + 1;
+        %         true_lab(count) = direc;
+        %         knn_lab(count) = newParameters.test_label;
+        %         count = count + 1;
     end
 end
 
