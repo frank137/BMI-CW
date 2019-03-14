@@ -25,12 +25,20 @@ for end_t = 1:length(train_times)
 end
 % Return Value:
 %modelParameters.train_in = data_formatted;
+
+data_formatted_train = prepare_regressor_data(trainingData,'train');
+W = 2;
+for ang = 1:k
+regr_param(ang) = train_regrssor_bmi(data_formatted_train(ang).in, data_formatted_train(ang).out, W, W);
+end
+
 modelParameters.train_in = data_formatted_per_train_time;
 modelParameters.labels = labels;
 mean_vals = regressor(trainingData);
 k_knn = 1;
 modelParameters.mean_vals = mean_vals;
 modelParameters.k = k_knn;
+modelParameters.regr_param = regr_param;
 
 end
 
