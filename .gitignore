@@ -6,3 +6,4 @@ scripts/monkeydata_training.mat
 .DS_Store
 .DS_Store
 .DS_Store
+scripts/SVM-classifier/monkeydata_training.mat
