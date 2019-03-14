@@ -3,7 +3,7 @@ mu = param.mu;
 s = param.s;
 % feed the testing data through Theta matrix
 numBasisFncs = length(mu)+1;
-Thetas = zeros(length(in), numBasisFncs); % matrix of basis functions
+Thetas = zeros(size(in,1), numBasisFncs); % matrix of basis functions
 for ii = 1 : size(in,1)
     for jj = 1 : numBasisFncs 
         if jj == 1
