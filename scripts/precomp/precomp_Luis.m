@@ -48,7 +48,7 @@ xlabel('Time (ms)')
 movement = 3;
 window = 300; %time window over which spikes will be avergaed
 %for all electrode do this
-for j = 1
+for j = 1:98
     spikes_total = zeros(1,800);
     %for all trials and movement 1
     l2 = 0;

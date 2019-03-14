@@ -23,33 +23,51 @@ TEST = [];
 label_vecTR =[];
 label_vec1 = zeros(length(training_data),1);
 meanpath = zeros(2,1000,8);
-
+std = zeros(2,1000,8);
+%for every movement
 for movement = 1:8
-    %    PSTH_training = [PSTH_training;PSTHplotter(trial,movement,electrode,50,0,trials)];
-    %    labelvector1((movement-1)*trials+1:trials*movement) = movement;
-    %    PSTH_test = [PSTH_test;PSTHplotter(trial,movement,electrode,50,0,50+trials)];
-    %    labelvector2((movement-1)*trials+1:trials*movement) = movement;
-    for j = 1:length(training_data)
+    %for all the trials of the training data
+    for trial = 1:length(training_data)
+        % for all electrodes (98)
         for i = electrode 
-            cell_tr = training_data(j,movement).spikes(i,1:endtime);
-            processed_training(j,i) = sum(cell_tr);
-            label_vec1(j) = movement;      
+            %for one electrode for one trial for one movement
+            %take spikes up to specified endtime
+            cell_tr = training_data(trial,movement).spikes(i,1:endtime);
+            %process it: basically add all the spikes in this time space,
+            %this will give you one value for each electrode for each trial
+            %for each movement
+            processed_training(trial,i) = sum(cell_tr);
+            %collect the movement for later on training a model
+            label_vec1(trial) = movement;      
         end
-        handpos = training_data(j,movement).handPos(1:2,:);
+        %collect the hand position (trajectory) for this trial
+        handpos = training_data(trial,movement).handPos(1:2,:);
+        %pad it so that it reaches a length of 1000
         zeropad = 1000-length(handpos);
-        meanpath(:,:,movement) =  meanpath(:,:,movement)+[handpos,zeros(2,zeropad)];    
+        % add the mean path to the specific movement, later on this will be
+        % averaged over the number of trials
+        meanpath(:,:,movement) =  meanpath(:,:,movement)+[handpos,zeros(2,zeropad)];
+        %record hand pos for every iteration (every trial)
+        std(:,:,movement,trial) = [handpos,zeros(2,zeropad)];
     end
-    
+    %store sum of spikes in training vector, this will store
+    %trial*electrode number of values for each movement
     TR = [TR;processed_training];
-    
+    %store labels of training vector
     label_vecTR = [label_vecTR;label_vec1];
     
 end
+% normalise meanpath by number of trials aka calculate actual mean
 meanpath = meanpath./length(training_data);
 
+%train model
 Mdl = fitcecoc(TR,label_vecTR,'Learners',learner);
 
+%store model as one of the model parameters
 modelParameters.Mdl = Mdl;
+%store mean path as nother one
 modelParameters.path = meanpath;
+%store std as another one
+modelParameters.
 
 end

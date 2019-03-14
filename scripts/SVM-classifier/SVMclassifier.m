@@ -15,14 +15,14 @@ testData = trial(ix(81:end),:);
 
 
 
-endtime =380;
+endtime =[380];
 
-learner = ["svm","discriminant", "knn", "linear","naivebayes", "tree"];
+learner = ["svm"];
 for w = 1:length(learner)
-    figure(w)
-%     hold on
-% axis square
-% grid
+    figure
+    hold on
+axis square
+grid
 count =1;
     for e = 1:length(endtime)
         fprintf('Testing the continuous position estimator...')
@@ -50,10 +50,10 @@ count =1;
                     past_current_trial.startHandPos = testData(tr,direc).handPos(1:2,1);
                     
                     if nargout('positionEstimator') == 3
-                        [decodedPosX, decodedPosY, newParameters] = positionEstimator(past_current_trial, modelParameters);
+                        [decodedPosX, decodedPosY, newParameters] = positionEstimator(past_current_trial, modelParameters,endtime(e));
                         %                 modelParameters = newParameters;
                     elseif nargout('positionEstimator') == 2
-                        [decodedPosX, decodedPosY] = positionEstimator(past_current_trial, modelParameters);
+                        [decodedPosX, decodedPosY] = positionEstimator(past_current_trial, modelParameters,endtime(e));
                     end
                     
                     decodedPos = [decodedPosX; decodedPosY];
@@ -66,10 +66,10 @@ count =1;
                     count = count + 1;
                 end
                 n_predictions = n_predictions+length(times);
-%                 hold on
-%                 plot(decodedHandPos(1,:),decodedHandPos(2,:),'r','LineWidth',2);
-%                 plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
-%                 
+                hold on
+                plot(decodedHandPos(1,:),decodedHandPos(2,:),'r','LineWidth',2);
+                plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
+% %                 
                 % create confusion matrix
                 %             trueMov(count) = direc;
                 %             predMov(count) = newParameters;
@@ -79,12 +79,12 @@ count =1;
         
 %         legend('Decoded Position', 'Actual Position')
         
-        RMSE(w) = sqrt(meanSqError/n_predictions);
+        RMSE(w,e) = sqrt(meanSqError/n_predictions)
         
         confMat = confusionmat(trueMov,predMov);
         
-        %figure
-%         hold off
+        figure
+        hold off
         heatmap(confMat)
         ylabel('True class')
         xlabel('Predicted class')
@@ -96,7 +96,7 @@ count =1;
             end
         end
         
-        accuracy(e) = correct/length(trueMov)
+        accuracy(w,e) = correct/length(trueMov)
         
     end
 end

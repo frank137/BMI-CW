@@ -1,5 +1,5 @@
 
-function [x, y,predicted_label] = positionEstimator(test_data, modelParameters)
+function [x, y,predicted_label] = positionEstimator(test_data, modelParameters,up_time)
 
 % **********************************************************
 %
@@ -53,7 +53,7 @@ TEST = [];
 % label_test = zeros(800,1);
 label_vecTST =[];
 label_vec2 = zeros(length(test_data),1);
-up_time = 380;
+%up_time = 380;
 if length(test_data.spikes(1,:))<up_time
     ins_time = length(test_data.spikes(1,:));
 else
