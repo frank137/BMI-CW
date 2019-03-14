@@ -1,5 +1,4 @@
-function param =  train_regrssor(train_in, train_out,k, method, width)
-%method = 1 is grid spaced functions, =2 is kmeans spaced
+function param =  train_regrssor(train_in, train_out,k, width)
 % obtain spread of the data
 muMin = min(train_in);
 muMax = max(train_in);
@@ -9,36 +8,22 @@ NumBasisFnsy = k; % number of bfs train_in y direction
 
 mu = zeros(NumBasisFnsx*NumBasisFnsy, 2); % initialise means
 s = (muMax - muMin)./(width); % controls bf spread
-if method == 1
-    % equally spcaed grid
-    for ii = 1 : NumBasisFnsx
-        for jj = 1 : NumBasisFnsy
-            % stepping train_in x direction
-            mu((ii-1)*NumBasisFnsx+jj, 1) = muMin(1,1) + (ii-1)*...
-                (muMax(1,1)-muMin(1,1))/(NumBasisFnsx-1);
-            % stepping train_in y direction
-            mu((ii-1)*NumBasisFnsy+jj, 2) = muMin(1,2) + (jj-1)*...
-                (muMax(1,2)-muMin(1,2))/(NumBasisFnsy-1);
-            % % or train_in one go:
-            % mu((i-1)*NumBasisFnsy+j,:) = muMin + ...
-            % (ii-1)*(muMax-muMin)/(NumBasisFnsx-1).*[1 0] +...
-            % (jj-1)*(muMax-muMin)/(NumBasisFnsy-1).*[0 1];
-        end
+% equally spcaed grid
+for ii = 1 : NumBasisFnsx
+    for jj = 1 : NumBasisFnsy
+        % stepping train_in x direction
+        mu((ii-1)*NumBasisFnsx+jj, 1) = muMin(1,1) + (ii-1)*...
+            (muMax(1,1)-muMin(1,1))/(NumBasisFnsx-1);
+        % stepping train_in y direction
+        mu((ii-1)*NumBasisFnsy+jj, 2) = muMin(1,2) + (jj-1)*...
+            (muMax(1,2)-muMin(1,2))/(NumBasisFnsy-1);
+        % % or train_in one go:
+        % mu((i-1)*NumBasisFnsy+j,:) = muMin + ...
+        % (ii-1)*(muMax-muMin)/(NumBasisFnsx-1).*[1 0] +...
+        % (jj-1)*(muMax-muMin)/(NumBasisFnsy-1).*[0 1];
     end
-elseif method == 2
-    
-    % kmeans space gaussians
-    [idx,C] = kmeans(train_in,NumBasisFnsx*NumBasisFnsy);
-    
-    % figure
-    % plot(mu(:,2),mu(:,1),'+');
-    % hold on
-    % plot(C(:,2),C(:,1),'o');
-    % ylabel('latitude [deg]'); xlabel('longitude [deg]');
-    % legend('Equally spaced centres','Kmeasn centers');
-    mu = C;
-    % c's are better than mus as they are concentrated where more data is
 end
+
 
 % calculate Theta
 numBasisFncs = length(mu)+1;
@@ -70,7 +55,7 @@ for ii = 1 : length(train_in)
             phis(ii,jj) = 1; % 1st bf is just an offset
         else
             phis(ii,jj) = multivar_gauss(train_in(ii,:),mu(jj-1,:),Cov);
- %  multivariate
+            %  multivariate
         end
     end
 end
