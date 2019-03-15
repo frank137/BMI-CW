@@ -1,0 +1,8 @@
+all the things we can change to improve the bloody regressor:
+
+- step_time: has the form from 1 to 20 ms, basically change steptime at which sum of
+ spikes for electrodes is taken
+- differesent sets of best electrodes
+- dim_reducer: combines electrodes
+- W (in position Estimator training) try 1:10, width of the gaussian (width is actually inverse of the width)
+%- k number of gaussian functions per dimension change to the power by multiplication

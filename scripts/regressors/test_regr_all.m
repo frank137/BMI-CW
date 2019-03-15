@@ -1,4 +1,4 @@
-%% Test function for regressor
+ %% Test function for regressor
 clear,clc, close all
 addpath(['..',filesep,'KNN-bayes classifiers'])
 load monkeydata_training.mat
