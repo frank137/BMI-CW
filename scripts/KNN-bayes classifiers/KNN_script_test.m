@@ -30,6 +30,7 @@ grid
 
 % Train Model
 modelParameters = positionEstimatorTraining(trainingData);
+%%
 count = 1;
 for tr=1:size(testData,1)
     display(['Decoding block ',num2str(tr),' out of ',num2str(size(testData,1))]);

@@ -80,9 +80,13 @@ for i = 1:input_len
     label(i,1) = class_unique(pred_class_idx);
 end
 
+test_input = prepare_regressor_data(test_data,'test');
+prediction = test_regressor_bmi(test_input, modelParameters.regr_param(label));
 
-x = modelParameters.mean_vals(label).mean_pos(1,t);
-y = modelParameters.mean_vals(label).mean_pos(2,t);
+x = prediction(1);
+y = prediction(2);
+%x = modelParameters.mean_vals(label).mean_pos(1,t);
+%y = modelParameters.mean_vals(label).mean_pos(2,t);
 modelParameters.test_label = label;
 new_param = modelParameters;
 end
