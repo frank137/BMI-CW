@@ -60,6 +60,7 @@ end
 % normalise meanpath by number of trials aka calculate actual mean
 meanpath = meanpath./length(training_data);
 
+std(:,:,movement) = std(:,:,movement,trial);
 %train model
 Mdl = fitcecoc(TR,label_vecTR,'Learners',learner);
 
