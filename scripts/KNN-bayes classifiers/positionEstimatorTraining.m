@@ -23,13 +23,13 @@ for end_t = 1:length(train_times)
     [data_formatted, labels] = tidy_spikes(trainingData,1:train_times(end_t));
     data_formatted_per_train_time(:,:,end_t) = data_formatted;    
 end
-% Return Value:
-%modelParameters.train_in = data_formatted;
 
+% regressor
 data_formatted_train = prepare_regressor_data(trainingData,'train');
 W = 2;
 for ang = 1:k
-regr_param(ang) = train_regrssor_bmi(data_formatted_train(ang).in, data_formatted_train(ang).out, W, W);
+regr_param(ang) = train_regrssor_bmi(data_formatted_train(ang).in, data_formatted_train(ang).out, W, 2);
+coeff_pca(:,:,ang) = data_formatted_train(ang).coeff_pca;
 end
 
 modelParameters.train_in = data_formatted_per_train_time;
@@ -39,7 +39,7 @@ k_knn = 1;
 modelParameters.mean_vals = mean_vals;
 modelParameters.k = k_knn;
 modelParameters.regr_param = regr_param;
-
+modelParameters.coeff_pca = coeff_pca;
 end
 
 % format the data in a way

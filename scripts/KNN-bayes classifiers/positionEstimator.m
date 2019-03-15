@@ -55,7 +55,7 @@ up_to = find(train_times==input_time);
 if isempty(up_to)
     up_to = length(train_times);
 end
-    
+
 
 %[test_data_formatted, ~] = tidy_spikes(test_data,time_range);
 [test_data_formatted, ~] = tidy_spikes(test_data,1:train_times(up_to));
@@ -81,6 +81,11 @@ for i = 1:input_len
 end
 
 test_input = prepare_regressor_data(test_data,'test');
+if modelParameters.coeff_pca(label) ~= 0 % this only applies if pca was done
+    test_input = test_input*modelParameters.coeff_pca(:,:,label);
+end
+
+
 prediction = test_regressor_bmi(test_input, modelParameters.regr_param(label));
 
 x = prediction(1);

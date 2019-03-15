@@ -41,6 +41,7 @@ for tr=1:size(testData,1)
         times=320:20:size(testData(tr,direc).spikes,2);
         
         for t=times
+            
             past_current_trial.trialId = testData(tr,direc).trialId;
             past_current_trial.spikes = testData(tr,direc).spikes(:,1:t);
             past_current_trial.decodedHandPos = decodedHandPos;

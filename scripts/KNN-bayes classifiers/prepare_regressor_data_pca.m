@@ -4,12 +4,12 @@ function data_out = prepare_regressor_data(data_to_format, train_or_test)
 [n,k] = size(data_to_format);
 [i,t] = size(data_to_format(1,1).spikes);
 
-dimensions = [3,4,7,18,27,31,33,34,36,41,55,68,69,75,81,90,92,98];
+dimensions = 1:i;
 %[3,4,7,18,27,31,33,34,36,41,55,68,69,75,81,90,92,98];
 %[3,4,18,34,36,96];%1:i; %electrodes used, some are useless so we shouldn't use them
 end_time = 540; %ms
 start_time = 320; %ms
-step_time = 20; %ms
+step_time = 10; %ms
 times = start_time:step_time:end_time;
 dim_reducer = 3;%14; % final dimensions will be initial dimensions / dim_reducer
 if strcmp(train_or_test,'train')
@@ -35,10 +35,9 @@ if strcmp(train_or_test,'train')
             end
         end
         % reduce data
-        data_out(a).in = reduce_feat_dim(data_formatted(a).in,dim_reducer);%data_formatted(a).in;%
-        %[data_out(a).in, coeff_pca] = reduce_feat_dim(data_formatted(a).in, 8);
-        %data_out(a).coeff_pca=coeff_pca;
-        data_out(a).coeff_pca=0;
+         %data_out(a).in = reduce_feat_dim(data_formatted(a).in,dim_reducer);%data_formatted(a).in;%
+         [data_out(a).in, coeff_pca] = reduce_feat_dim(data_formatted(a).in, 9);
+         data_out(a).coeff_pca=coeff_pca;
     end
 elseif strcmp(train_or_test,'test')
     data_formatted = zeros(1,length(dimensions));
@@ -46,37 +45,37 @@ elseif strcmp(train_or_test,'test')
         data_formatted(el==dimensions) = sum(data_to_format.spikes(el,:));
     end
     % reduce data
-    data_out = reduce_feat_dim(data_formatted,dim_reducer);%data_formatted;%reduce_feat_dim(data_formatted,0.65);
-    %data_out = data_formatted;
+    %data_out = reduce_feat_dim(data_formatted,dim_reducer);%data_formatted;%reduce_feat_dim(data_formatted,0.65);
+    data_out = data_formatted;
 else
     warning('Insert either train or test')
 end
 end
 
-function reduced_features = reduce_feat_dim(features,sum_int)
-%features is a obervations x dimensions vector and the dimensions are
-%reduced by summing over dimensions sum_int by sum_int
-new_dim = size(features,2)/sum_int;
-reduced_features = zeros(size(features,1),new_dim);
-start_idx = 1;
-for i = 1:new_dim
-    reduced_features(:,i)= sum(features(:,start_idx:start_idx+sum_int-1),2);
-    start_idx = start_idx+sum_int;
-end
-
-end
-
-% function [reduced_features, best_coeff] = reduce_feat_dim(features, M_pca)
-% % examples:
-% %features = reduce_feat_dim(features,0.99); does PCA with 99% variance kept.
-%
-% [coeff,score,latent,tsquared,explained,mu] = pca(features);
-% sum_eig = sum(explained(1:M_pca))
-% %perc_accepted = 0.95; % 144
-%
-%
-% best_coeff = coeff(:,1:M_pca);
-% reduced_features = score(:,1:M_pca);
-%
+% function reduced_features = reduce_feat_dim(features,sum_int)
+%     %features is a obervations x dimensions vector and the dimensions are
+%     %reduced by summing over dimensions sum_int by sum_int
+%     new_dim = size(features,2)/sum_int;
+%     reduced_features = zeros(size(features,1),new_dim);
+%     start_idx = 1;
+%     for i = 1:new_dim
+%         reduced_features(:,i)= sum(features(:,start_idx:start_idx+sum_int-1),2);  
+%         start_idx = start_idx+sum_int;
+%     end 
+%     
 % end
+
+function [reduced_features, best_coeff] = reduce_feat_dim(features, M_pca)
+% examples:
+%features = reduce_feat_dim(features,0.99); does PCA with 99% variance kept.
+
+[coeff,score,latent,tsquared,explained,mu] = pca(features);
+sum_eig = sum(explained(1:M_pca))
+%perc_accepted = 0.95; % 144
+
+
+best_coeff = coeff(:,1:M_pca);
+reduced_features = score(:,1:M_pca);
+
+end
 
