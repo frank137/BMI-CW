@@ -38,6 +38,7 @@ mean_vals = regressor(trainingData);
 k_knn = 1;
 modelParameters.mean_vals = mean_vals;
 modelParameters.k = k_knn;
+% regressor
 modelParameters.regr_param = regr_param;
 modelParameters.coeff_pca = coeff_pca;
 end

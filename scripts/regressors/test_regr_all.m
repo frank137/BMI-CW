@@ -22,20 +22,27 @@ W = 2;
 param = train_regrssor_bmi(data_formatted_train(1).in, data_formatted_train(1).out, W, W);
 
 %% test regressor
-%give as input ordered inputs from a trial
+%give as input like in competion 
+% time_to = 600;
+% test_prep.spikes = testData(1,1).spikes(:,1:time_to);
+% test_input = prepare_regressor_data(test_prep,'test');
+% test_output_real = testData(1,1).handPos(1:2,time_to);
+% test_output_real = test_output_real';
 
-test_input = prepare_regressor_data(testData(1,1),'test');
-test_output_real = testData(1,1).handPos(1:2,400);
+% test all
+test_inputt = prepare_regressor_data(testData,'train');
+test_input = test_inputt(1).in;
+test_output_real = test_inputt(1).out;
 
 prediction = test_regressor_bmi(test_input, param);
 
 %% scores
 
-RMSE = sqrt(mean((prediction-test_output_real).^2));
+RMSE = sqrt(mean((prediction-test_output_real).^2))
 figure
 plot(prediction(:,1),prediction(:,2))
 hold on
-plot(test_output_real(1),test_output_real(2))
+plot(test_output_real(:,1),test_output_real(:,2))
 
 title 'Regressor vs true position';
 legend('Predicted with regressor','true')

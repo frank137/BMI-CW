@@ -80,13 +80,13 @@ for i = 1:input_len
     label(i,1) = class_unique(pred_class_idx);
 end
 
+% regressor
 test_input = prepare_regressor_data(test_data,'test');
 if modelParameters.coeff_pca(label) ~= 0 % this only applies if pca was done
     test_input = test_input*modelParameters.coeff_pca(:,:,label);
 end
-
-
 prediction = test_regressor_bmi(test_input, modelParameters.regr_param(label));
+
 
 x = prediction(1);
 y = prediction(2);
