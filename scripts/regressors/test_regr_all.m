@@ -18,35 +18,36 @@ data_formatted_train = prepare_regressor_data(trainingData,'train');
 %data_formatted_test = prepare_train_data(testData);
 
 %% train regressor
+figure
+for a = 1:k
 W = 2;
-param = train_regrssor_bmi(data_formatted_train(1).in, data_formatted_train(1).out, W, W);
+param = train_regrssor_bmi(data_formatted_train(a).in, data_formatted_train(a).out, W, W);
 
 %% test regressor
 %give as input like in competion 
-% time_to = 600;
-% test_prep.spikes = testData(1,1).spikes(:,1:time_to);
+% time_to = 540;
+% test_prep.spikes = testData(1,a).spikes(:,1:time_to);
 % test_input = prepare_regressor_data(test_prep,'test');
-% test_output_real = testData(1,1).handPos(1:2,time_to);
+% test_output_real = testData(1,a).handPos(1:2,time_to);
 % test_output_real = test_output_real';
 
 % test all
 test_inputt = prepare_regressor_data(testData,'train');
-test_input = test_inputt(1).in;
-test_output_real = test_inputt(1).out;
+test_input = test_inputt(a).in;
+test_output_real = test_inputt(a).out;
 
 prediction = test_regressor_bmi(test_input, param);
 
 %% scores
 
-RMSE = sqrt(mean((prediction-test_output_real).^2))
-figure
+RMSE(:,:,a) = sqrt(mean((prediction-test_output_real).^2));
 plot(prediction(:,1),prediction(:,2))
 hold on
 plot(test_output_real(:,1),test_output_real(:,2))
-
+end
 title 'Regressor vs true position';
 legend('Predicted with regressor','true')
-
+mean(mean(RMSE))
 
 %% functions
 % function data_formatted = prepare_regressor_data(data_to_format, train_or_test)
