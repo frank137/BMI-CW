@@ -20,6 +20,7 @@ data_formatted_train = prepare_regressor_data(trainingData,'train');
 %% train regressor
 figure
 for a = 1:k
+pause(0.001)
 W = 2;
 param = train_regrssor_bmi(data_formatted_train(a).in, data_formatted_train(a).out, W, W);
 
