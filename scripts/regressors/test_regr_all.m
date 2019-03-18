@@ -1,6 +1,7 @@
  %% Test function for regressor
 clear,clc, close all
 addpath(['..',filesep,'KNN-bayes classifiers'])
+addpath(['..'])
 load monkeydata_training.mat
 
 %start by regressing position 1
@@ -45,9 +46,9 @@ prediction = test_regressor_bmi(test_input, param);
 %% scores
 
 RMSE(:,:,a) = sqrt(mean((prediction-test_output_real).^2));
-plot(prediction(:,1),prediction(:,2))
+plot(prediction(:,1),prediction(:,2),'o')
 hold on
-plot(test_output_real(:,1),test_output_real(:,2))
+plot(test_output_real(:,1),test_output_real(:,2),'o')
 end
 title 'Regressor vs true position';
 legend('Predicted with regressor','true')
