@@ -13,6 +13,9 @@ trainingData = trial(ix(1:80),:);
 testData = trial(ix(81:end),:);
 
 %% tidy data up
+%training data formatted will come in the form of sums of spikes for
+%different electrodes (or combinations of them) and for all trials - see
+%function comments for more info
 data_formatted_train = prepare_regressor_data(trainingData,'train');
 
 %data_formatted_test = prepare_train_data(testData);
