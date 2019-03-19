@@ -54,27 +54,59 @@ TEST = [];
 label_vecTST =[];
 label_vec2 = zeros(length(test_data),1);
 %up_time = 380;
-if length(test_data.spikes(1,:))<up_time
-    ins_time = length(test_data.spikes(1,:));
+if time < up_time
+    ins_time = time;
 else
     ins_time = up_time;
 end
 
 for i = electrode
     %use this line if wanna get an estimate for each time point
-    %cell_test = test_data.spikes(i,:);
+%      cell_test = test_data.spikes(i,:);
     %use this line if you wanna go with the first estimate and that's it
-    cell_test = test_data.spikes(i,1:ins_time);
+   cell_test = test_data.spikes(i,1:ins_time);
     processed_test(i) = sum(cell_test);
 end
 TEST = [TEST;processed_test];
 
 predicted_label = predict(modelParameters.Mdl,TEST);
-
+test_spikes = prepare_regressor_data(test_data,'test');
+coeffs = modelParameters.coeffs;
+maxmins = modelParameters.extremes;
 for movement = 1:8
     if predicted_label == movement
-        x = modelParameters.path(1,time,movement);
-        y = modelParameters.path(2,time,movement);
+        %mean approximation
+        %         x = modelParameters.path(1,time,movement);
+        %         y = modelParameters.path(2,time,movement);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %linear regressor
+        x_prediction = 0;
+        y_prediction = 0;
+        min_x = maxmins(1,1,movement);
+        max_x = maxmins(1,2,movement);
+        min_y = maxmins(2,1,movement);
+        params_x = coeffs(:,1,movement);
+        params_y = coeffs(:,2,movement);
+        max_y = maxmins(2,2,movement);
+        x_prediction = params_x'*[1,test_spikes]';
+        y_prediction = params_y'*[1,test_spikes]';
+        
+        if x_prediction > max_x
+            x_prediction = max_x;
+        end
+        if y_prediction > max_y
+            y_prediction = max_y;
+        end
+        if x_prediction < min_x
+            x_prediction = min_x;
+        end
+        if y_prediction < min_y
+            y_prediction = min_y;
+        end
+        
+        x = x_prediction;
+        y = y_prediction;
+        
     end
 end
 

@@ -25,7 +25,7 @@ fprintf('Testing the continuous position estimator...')
 meanSqError = 0;
 n_predictions = 0;
 % Train Model
-modelParameters = positionEstimatorTraining(trainingData,380);
+modelParameters = positionEstimatorTraining(trainingData,380,"svm");
 for t = times
     count = 1;
     %for the 50 trials
@@ -42,10 +42,10 @@ for t = times
             past_current_trial.startHandPos = testData(tr,direc).handPos(1:2,1);
             
             if nargout('positionEstimator') == 3
-                [decodedPosX, decodedPosY, newParameters] = positionEstimator(past_current_trial, modelParameters);
+                [decodedPosX, decodedPosY, newParameters] = positionEstimator(past_current_trial, modelParameters,380);
                 %                 modelParameters = newParameters;
             elseif nargout('positionEstimator') == 2
-                [decodedPosX, decodedPosY] = positionEstimator(past_current_trial, modelParameters);
+                [decodedPosX, decodedPosY] = positionEstimator(past_current_trial, modelParameters,380);
             end
             
             decodedPos = [decodedPosX; decodedPosY];

@@ -1,6 +1,7 @@
 clear all
-close all
+% close all
 
+tic
 load monkeydata_training.mat
 
 % Set random number generator
@@ -100,6 +101,7 @@ count =1;
         
     end
 end
+toc
 %rmpath(genpath(teamName))
 %% use if evaluating acc and RSME for different endpoints
 % RMSE = nonzeros(RMSE);

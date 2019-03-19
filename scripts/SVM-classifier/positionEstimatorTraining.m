@@ -23,7 +23,8 @@ TEST = [];
 label_vecTR =[];
 label_vec1 = zeros(length(training_data),1);
 meanpath = zeros(2,1000,8);
-std = zeros(2,1000,8);
+%prepare training data for regressor
+data_formatted_train = prepare_regressor_data(training_data,'train');
 %for every movement
 for movement = 1:8
     %for all the trials of the training data
@@ -47,8 +48,6 @@ for movement = 1:8
         % add the mean path to the specific movement, later on this will be
         % averaged over the number of trials
         meanpath(:,:,movement) =  meanpath(:,:,movement)+[handpos,zeros(2,zeropad)];
-        %record hand pos for every iteration (every trial)
-        std(:,:,movement,trial) = [handpos,zeros(2,zeropad)];
     end
     %store sum of spikes in training vector, this will store
     %trial*electrode number of values for each movement
@@ -56,11 +55,37 @@ for movement = 1:8
     %store labels of training vector
     label_vecTR = [label_vecTR;label_vec1];
     
+    %REGRESSION
+    
+    %get x positin from processed training data
+x_position = data_formatted_train(movement).out(:,1);
+%get y position from processed training data
+y_position = data_formatted_train(movement).out(:,2);
+% get max and mins for x and y in order to later bound estimations
+max_x = max(x_position);
+max_y = max(y_position);
+min_x = min(x_position);
+min_y = min(y_position);
+maxs_mins(:,:,movement) = [ min_x max_x;min_y max_y];
+% get length of data
+length_data_in = length(data_formatted_train(1).in);
+%get processed spike data and concatenate to a colum of ones to prepare it
+%for the regress function
+processed_electrodes = [ones(length_data_in,1),data_formatted_train(movement).in];
+%calculate parameters for x and y for this movement
+% LINEAR REGRESSION
+% params_x = regress(x_position,processed_electrodes);
+% params_y = regress(y_position,processed_electrodes);
+% MULTIVARIATE REGRESSION
+params_x = mvregress(processed_electrodes,x_position);
+params_y = mvregress(processed_electrodes,y_position);
+%store coefficient for this movement
+coeffs(:,:,movement) = [params_x,params_y];
+    
 end
 % normalise meanpath by number of trials aka calculate actual mean
 meanpath = meanpath./length(training_data);
 
-std(:,:,movement) = std(:,:,movement,trial);
 %train model
 Mdl = fitcecoc(TR,label_vecTR,'Learners',learner);
 
@@ -68,7 +93,9 @@ Mdl = fitcecoc(TR,label_vecTR,'Learners',learner);
 modelParameters.Mdl = Mdl;
 %store mean path as nother one
 modelParameters.path = meanpath;
-%store std as another one
-modelParameters.
+%store linear regressor coefficients
+modelParameters.coeffs = coeffs;
+%store max and mins for each movement
+modelParameters.extremes = maxs_mins;
 
 end

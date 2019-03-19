@@ -1,5 +1,5 @@
  %% Test function for regressor
-clear,clc, close all
+clear, close all
 load monkeydata_training.mat
 
 %start by regressing position 1
@@ -21,95 +21,54 @@ data_formatted_train = prepare_regressor_data(trainingData,'train');
 
 %% train linear regressor
 
-movement = 1;
+movement = 7;
 x_position = data_formatted_train(movement).out(:,1);
 y_position = data_formatted_train(movement).out(:,2);
+max_x = max(x_position);
+max_y = max(y_position);
+min_x = min(x_position);
+min_y = min(y_position);
 length_data_in = length(data_formatted_train(1).in);
-processed_electrodes = [ones(length_data_in,1),data_formatted_train(1).in];
+processed_electrodes = [ones(length_data_in,1),data_formatted_train(movement).in];
 params_x = regress(x_position,processed_electrodes);
 params_y = regress(y_position,processed_electrodes);
+% params_x = mvregress(processed_electrodes,x_position);
+% params_y = mvregress(processed_electrodes,y_position);
 
 
 %% test linear regressor
 test_inputt = prepare_regressor_data(testData,'train');
-test_input = test_inputt(1).in;
-test_output_real = test_inputt(1).out;
+test_input = test_inputt(movement).in;
+test_output_real = test_inputt(movement).out;
+length_place = size(test_input,1);
+x_prediction = zeros(length_place,1);
+y_prediction = zeros(length_place,1);
+ for a = 1:size(test_input,1)
+    x_prediction(a) = params_x'*[1,test_input(a,:)]';
+    y_prediction(a) = params_y'*[1,test_input(a,:)]';
+    if x_prediction(a) > max_x
+        x_prediction(a) = max_x;
+    end
+    if y_prediction(a) > max_y
+        y_prediction(a) = max_y;
+    end
+    if x_prediction(a) < min_x
+        x_prediction(a) = min_x;
+    end
+    if y_prediction(a) < min_y
+        y_prediction(a) = min_y;
+    end
+ end
 
-for a = 1:length(test_input,2)
-    x_prediction = param_x
-prediction = test_regressor_bmi(test_input, param);
-end
+prediction = [x_prediction,y_prediction];
 
-
-
-%% test regressor
-%give as input like in competion 
-% time_to = 600;
-% test_prep.spikes = testData(1,1).spikes(:,1:time_to);
-% test_input = prepare_regressor_data(test_prep,'test');
-% test_output_real = testData(1,1).handPos(1:2,time_to);
-% test_output_real = test_output_real';
-
-% test all
-test_inputt = prepare_regressor_data(testData,'train');
-test_input = test_inputt(1).in;
-test_output_real = test_inputt(1).out;
-
-prediction = test_regressor_bmi(test_input, param);
-
-%% scores
-
-RMSE = sqrt(mean((prediction-test_output_real).^2))
-figure
-plot(prediction(:,1),prediction(:,2))
+%%
+plot(x_prediction,y_prediction,'ko')
 hold on
-plot(test_output_real(:,1),test_output_real(:,2))
-% 
-title 'Regressor vs true position';
-legend('Predicted with regressor','true')
+plot(test_output_real(:,1),test_output_real(:,2),'b+')
+legend('Predicted data', 'Real data')
+ylabel('y'); xlabel('x')
+title(['Linear regression performance for movement ',num2str(movement)])
+grid on
+RMSE = sqrt(mean((prediction-test_output_real).^2))
 
-% 
-% %% functions
-% % function data_formatted = prepare_regressor_data(data_to_format, train_or_test)
-% % % train_or_test = 'train' prepares training data, train_or_test = 'test'
-% % % prepares test data
-% % [n,k] = size(data_to_format);
-% % [i,t] = size(data_to_format(1,1).spikes);
-% % 
-% % dimensions = [3,4,18,34,36];%1:i; %electrodes used, some are useless so we shouldn't use them
-% % end_time = 540; %ms
-% % start_time = 320; %ms
-% % step_time = 20; %ms
-% % times = start_time:step_time:end_time;
-% % 
-% % if strcmp(train_or_test,'train')
-% %     % .in(20,30) contains the sum of the spikes up to time 320ms of
-% %     % electrode number 30 from trial 20. .in(120,30) contains the sum of
-% %     % the spikes up to time 340ms (if step_time = 20) electrode 30 for trial 20
-% %     % .out(20,:) contains the x and y position for trial 20 at time stamp
-% %     % 320ms, .out(120,:) contains the x and y for trial 20 at time stamp
-% %     % 340 ms and so on.
-% %     for a = 1:k
-% %         data_formatted(a).in = zeros(n*length(times),length(dimensions)); %cumulative sums
-% %         data_formatted(a).out = zeros(length(times),2); %x,y
-% %         count = 1;
-% %         for tim = times
-% %             for t = 1:n % number of trials
-% %                 data_formatted(a).out(count,:) = data_to_format(t,a).handPos(1:2,tim);
-% %                 for el = dimensions
-% %                     data_formatted(a).in(count,el==dimensions) = sum(data_to_format(t,a).spikes(el,1:tim));
-% %                 end
-% %                 count = count +1;
-% %             end
-% %         end
-% %     end
-% %     
-% % elseif strcmp(train_or_test,'test')
-% %     data_formatted = zeros(1,length(dimensions));
-% %     for el = dimensions
-% %         data_formatted(el==dimensions) = sum(data_to_format.spikes(el,1:400));
-% %     end
-% % else
-% %     warning('Insert either train or test')
-% % end
-% % end
