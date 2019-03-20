@@ -7,7 +7,8 @@
 %function RMSE = testFunction_for_students_MTb(teamName)
 clear, clc, close all
 load monkeydata_training.mat
-
+addpath knn-linear-regrs
+%addpath knn-multivariate-regrs
 % Set random number generator
 rng(2013);
 ix = randperm(length(trial));
@@ -29,7 +30,7 @@ axis square
 grid
 
 % Train Model
-modelParameters = positionEstimatorTraining(trainingData);
+modelParameters = positionEstimatorTraining(trainingData,r);
 %%
 count = 1;
 for tr=1:size(testData,1)

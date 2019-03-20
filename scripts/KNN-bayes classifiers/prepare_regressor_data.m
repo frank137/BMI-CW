@@ -7,7 +7,7 @@ function data_out = prepare_regressor_data(data_to_format, train_or_test)
 [i,t] = size(data_to_format(1,1).spikes);
 
 %use only "useful" electrodes
-dimensions = [3,4,7,18,27,31,33,34,36,41,55,68,69,75,81,90,92,98];
+dimensions = 1:i;%[3,4,7,18,27,31,33,34,36,41,55,68,69,75,81,90,92,98];
 %[3,4,7,18,27,31,33,34,36,41,55,68,69,75,81,90,92,98];
 %[3,4,18,34,36,96];%1:i; %electrodes used, some are useless so we shouldn't use them
 
@@ -20,7 +20,7 @@ times = start_time:step_time:end_time;
 % dim_reducer "combines" electrodes by adding the spikes of every
 % consecutive 3, dim_reducer MUST BE A FACTOR OF THE NUMBER OF ELECTRODES
 % WE ARE USING, OTHERWISE TROUBLE
-dim_reducer = 3;%14; % final dimensions will be initial dimensions / dim_reducer
+dim_reducer = 1;%14; % final dimensions will be initial dimensions / dim_reducer
 if strcmp(train_or_test,'train')
     % .in(20,30) contains the sum of the spikes up to time 320ms of
     % electrode number 30 for trial 20.

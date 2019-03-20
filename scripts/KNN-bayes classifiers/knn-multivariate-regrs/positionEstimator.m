@@ -62,7 +62,8 @@ end
 label = zeros(size(test_data,1),1);
 
 K = modelParameters.k;
-all_dist = pdist2(test_data_formatted, modelParameters.train_in(:,:,up_to),'cityblock');
+%all_dist = pdist2(test_data_formatted, modelParameters.train_in(:,:,up_to),'cityblock');
+all_dist = sum(abs(test_data_formatted-modelParameters.train_in(:,:,up_to)),2)';
 [~, prev_idxs] = sort(all_dist,2);
 %numm_test x K array. Each row contains the indeces of the K shortest
 %distances
@@ -86,6 +87,18 @@ if modelParameters.coeff_pca(label) ~= 0 % this only applies if pca was done
     test_input = test_input*modelParameters.coeff_pca(:,:,label);
 end
 prediction = test_regressor_bmi(test_input, modelParameters.regr_param(label));
+
+% max min check
+maxmins = modelParameters.extremes;
+min_x = maxmins(1,1,label);
+max_x = maxmins(1,2,label);
+min_y = maxmins(2,1,label);
+max_y = maxmins(2,2,label);
+if prediction(1) > max_x,  prediction(1) = max_x; end
+if prediction(2) > max_y,   prediction(2) = max_y; end
+if prediction(1) < min_x, prediction(1) = min_x; end
+if prediction(2) < min_y,  prediction(2) = min_y; end
+
 
 
 x = prediction(1);
@@ -124,3 +137,5 @@ function reduced_dimension_data = red_dim(data_in)
 reduced_dimension_data = sum(data_in);
 
 end
+
+

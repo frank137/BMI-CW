@@ -1,7 +1,7 @@
 %%% Team Members: Francesco Guagliardo, Luis
 %%% Chaves Rodriguez, Daniele Olmeda, Arun Paul
 %%% KNN implementation
-function  [modelParameters] = positionEstimatorTraining(trainingData)
+function  [modelParameters] = positionEstimatorTraining(trainingData,r)
 
 % Arguments:
 
@@ -21,26 +21,45 @@ train_times = 320:20:400;%540;
 data_formatted_per_train_time = zeros(n*k,i,length(train_times));
 for end_t = 1:length(train_times)
     [data_formatted, labels] = tidy_spikes(trainingData,1:train_times(end_t));
-    data_formatted_per_train_time(:,:,end_t) = data_formatted;    
+    data_formatted_per_train_time(:,:,end_t) = data_formatted;
 end
 
 % regressor
 data_formatted_train = prepare_regressor_data(trainingData,'train');
-W = 2;
+%r = 30;
 for ang = 1:k
-regr_param(ang) = train_regrssor_bmi(data_formatted_train(ang).in, data_formatted_train(ang).out, W, 2);
-coeff_pca(:,:,ang) = data_formatted_train(ang).coeff_pca;
+    %get x positin from processed training data
+    x_position = data_formatted_train(ang).out(:,1);
+    %get y position from processed training data
+    y_position = data_formatted_train(ang).out(:,2);
+    
+    % get length of data
+    length_data_in = length(data_formatted_train(1).in);
+    %get processed spike data and concatenate to a colum of ones to prepare it
+    %for the regress function
+    processed_electrodes = [ones(length_data_in,1),data_formatted_train(ang).in];
+    
+    params_x = train_regressor(x_position,processed_electrodes,r,1);
+    params_y = train_regressor(y_position,processed_electrodes,r,1);
+    %store coefficient for this movement
+    coeffs(:,:,ang) = [params_x,params_y];
+    
+    % get max and mins for x and y in order to later bound estimations
+    max_x = max(x_position);
+    max_y = max(y_position);
+    min_x = min(x_position);
+    min_y = min(y_position);
+    maxs_mins(:,:,ang) = [ min_x max_x;min_y max_y];
+    
 end
-
 modelParameters.train_in = data_formatted_per_train_time;
 modelParameters.labels = labels;
-mean_vals = regressor(trainingData);
 k_knn = 1;
-modelParameters.mean_vals = mean_vals;
 modelParameters.k = k_knn;
 % regressor
-modelParameters.regr_param = regr_param;
-modelParameters.coeff_pca = coeff_pca;
+modelParameters.coeffs = coeffs;
+modelParameters.extremes = maxs_mins;
+modelParameters.new_dim = r;
 end
 
 % format the data in a way
@@ -72,17 +91,16 @@ reduced_dimension_data = sum(data_in);
 
 end
 
-function coeff =  regressor(trainingData)
+function b = train_regressor(y,X,r,option)
+% this linear regressor takes as an input your feature space, concated to a
+% vector of ones as the constant term which will give the bias or
+% "y-intercept"
+% we consider y and X given as column vector where time is in the rows
 
-[n,k] = size(trainingData);
-tim = 1000;
-for a = 1:k
-    temp = zeros(2,tim);
-    for t = 1:n
-        size_time = size(trainingData(t,a).handPos,2);
-        temp = temp+[trainingData(t,a).handPos(1:2,:),zeros(2,tim-size_time)];
-    end
-    coeff(a).mean_pos = temp./n;
+if option == 0
+    b = inv(X'*X)*X'*y;
+else
+    [Ur,Sr,Vr] = svds(X,r);
+    b = Vr/Sr*Ur'*y;
 end
-
 end
