@@ -74,11 +74,8 @@ length_data_in = length(data_formatted_train(1).in);
 processed_electrodes = [ones(length_data_in,1),data_formatted_train(movement).in];
 %calculate parameters for x and y for this movement
 % LINEAR REGRESSION
-% params_x = regress(x_position,processed_electrodes);
-% params_y = regress(y_position,processed_electrodes);
-% MULTIVARIATE REGRESSION
-params_x = mvregress(processed_electrodes,x_position);
-params_y = mvregress(processed_electrodes,y_position);
+params_x = LuisLinearRegressor(x_position,processed_electrodes,1);
+params_y = LuisLinearRegressor(y_position,processed_electrodes,1);
 %store coefficient for this movement
 coeffs(:,:,movement) = [params_x,params_y];
     

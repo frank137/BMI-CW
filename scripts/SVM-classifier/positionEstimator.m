@@ -88,9 +88,14 @@ for movement = 1:8
         params_x = coeffs(:,1,movement);
         params_y = coeffs(:,2,movement);
         max_y = maxmins(2,2,movement);
-        x_prediction = params_x'*[1,test_spikes]';
-        y_prediction = params_y'*[1,test_spikes]';
-        
+%         x_prediction = params_x'*[1,test_spikes]';
+%         y_prediction = params_y'*[1,test_spikes]';
+r = 18;
+[Urx,Srx,Vrx] = svds([1,test_spikes]',r);
+x_prediction = params_x'*Urx*Srx*Vrx';
+
+[Ury,Sry,Vry] = svds([1,test_spikes]',r);
+y_prediction = params_y'*Ury*Sry*Vry';
         if x_prediction > max_x
             x_prediction = max_x;
         end
