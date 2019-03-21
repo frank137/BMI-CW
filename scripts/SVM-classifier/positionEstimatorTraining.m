@@ -74,10 +74,12 @@ length_data_in = length(data_formatted_train(1).in);
 processed_electrodes = [ones(length_data_in,1),data_formatted_train(movement).in];
 %calculate parameters for x and y for this movement
 % LINEAR REGRESSION
-params_x = LuisLinearRegressor(x_position,processed_electrodes,1);
-params_y = LuisLinearRegressor(y_position,processed_electrodes,1);
+params_x = LuisLinearRegressor(x_position,processed_electrodes,0);
+params_y = LuisLinearRegressor(y_position,processed_electrodes,0);
 %store coefficient for this movement
-coeffs(:,:,movement) = [params_x,params_y];
+% Params_x(:,movement) = params_x;
+% Params_y(:,movement) = params_y;
+ coeffs(:,:,movement) = [params_x,params_y];
     
 end
 % normalise meanpath by number of trials aka calculate actual mean
@@ -92,6 +94,8 @@ modelParameters.Mdl = Mdl;
 modelParameters.path = meanpath;
 %store linear regressor coefficients
 modelParameters.coeffs = coeffs;
+% modelParameters.Xparams = Params_x;
+% modelParameters.Yparams = Params_y;
 %store max and mins for each movement
 modelParameters.extremes = maxs_mins;
 

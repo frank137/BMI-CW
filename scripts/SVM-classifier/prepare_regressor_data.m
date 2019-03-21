@@ -20,7 +20,8 @@ times = start_time:step_time:end_time;
 % dim_reducer "combines" electrodes by adding the spikes of every
 % consecutive 3, dim_reducer MUST BE A FACTOR OF THE NUMBER OF ELECTRODES
 % WE ARE USING, OTHERWISE TROUBLE
-dim_reducer = 1;%14; % final dimensions will be initial dimensions / dim_reducer
+%best dim reducer is 7 for 98 electrodes
+ dim_reducer = 7;%14; % final dimensions will be initial dimensions / dim_reducer
 if strcmp(train_or_test,'train')
     % .in(20,30) contains the sum of the spikes up to time 320ms of
     % electrode number 30 for trial 20.
@@ -29,14 +30,6 @@ if strcmp(train_or_test,'train')
     % .out(20,:) contains the x and y position for trial 20 at time stamp
     % 320ms, .out(120,:) contains the x and y for trial 20 at time stamp
     % 340 ms and so on.
-    % I BELIEVE WHAT IS ABOVE IS WRONG, I propose
-    % .in(1,1) contains the sum of the spikes up to time 320 ms for
-    % movement 1 ??????
-    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %
-    %       PLEASE FRAN CHANGE THIS
-    %
-    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                    Electrode 1 | Electrode 2 | Electrode 3 ...
     %Trial 1 - 1:320ms  | sum(spikes)|
     %Trial 2 - 1:320ms  |
@@ -120,17 +113,4 @@ end
 
 end
 
-% function [reduced_features, best_coeff] = reduce_feat_dim(features, M_pca)
-% % examples:
-% %features = reduce_feat_dim(features,0.99); does PCA with 99% variance kept.
-%
-% [coeff,score,latent,tsquared,explained,mu] = pca(features);
-% sum_eig = sum(explained(1:M_pca))
-% %perc_accepted = 0.95; % 144
-%
-%
-% best_coeff = coeff(:,1:M_pca);
-% reduced_features = score(:,1:M_pca);
-%
-% end
 

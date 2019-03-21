@@ -1,5 +1,5 @@
 clear all
-% close all
+close all
 
 tic
 load monkeydata_training.mat
@@ -11,20 +11,19 @@ ix = randperm(length(trial));
 %addpath(teamName);
 
 % Select training and testing data (you can choose to split your data in a different way if you wish)
-trainingData = trial(ix(1:80),:);
-testData = trial(ix(81:end),:);
+trainingData = trial(ix(1:18),:);
+testData = trial(ix(19:end),:);
 
 
 
 endtime =[380];
-
 learner = ["svm"];
 for w = 1:length(learner)
     figure
     hold on
-axis square
-grid
-count =1;
+    axis square
+    grid
+    count =1;
     for e = 1:length(endtime)
         fprintf('Testing the continuous position estimator...')
         
@@ -70,7 +69,7 @@ count =1;
                 hold on
                 plot(decodedHandPos(1,:),decodedHandPos(2,:),'r','LineWidth',2);
                 plot(testData(tr,direc).handPos(1,times),testData(tr,direc).handPos(2,times),'b')
-% %                 
+                % %
                 % create confusion matrix
                 %             trueMov(count) = direc;
                 %             predMov(count) = newParameters;
@@ -78,7 +77,7 @@ count =1;
             end
         end
         
-%         legend('Decoded Position', 'Actual Position')
+        %         legend('Decoded Position', 'Actual Position')
         
         RMSE(w,e) = sqrt(meanSqError/n_predictions)
         
@@ -101,6 +100,7 @@ count =1;
         
     end
 end
+
 toc
 %rmpath(genpath(teamName))
 %% use if evaluating acc and RSME for different endpoints
