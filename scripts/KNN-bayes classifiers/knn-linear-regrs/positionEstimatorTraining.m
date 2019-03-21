@@ -26,7 +26,7 @@ end
 
 % regressor
 data_formatted_train = prepare_regressor_data(trainingData,'train');
-%r = 30;
+r = 36;
 for ang = 1:k
     %get x positin from processed training data
     x_position = data_formatted_train(ang).out(:,1);
