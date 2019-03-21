@@ -7,7 +7,9 @@
 %function RMSE = testFunction_for_students_MTb(teamName)
 clear, clc, close all
 load monkeydata_training.mat
-
+%addpath knn-linear-regrs
+%addpath knn-multivariate-regrs
+addpath bayes-linear-regrs
 % Set random number generator
 rng(2013);
 ix = randperm(length(trial));
