@@ -73,10 +73,20 @@ for ang = 1:k
     coeffs(:,:,ang) = [params_x,params_y];
     
     % get max and mins for x and y in order to later bound estimations
+    fix_pos = 8;
     max_x = max(x_position);
+    if max_x < 0, max_x = max_x +fix_pos;
+    else,  max_x = max_x -fix_pos; end
     max_y = max(y_position);
+    if max_y < 0, max_y = max_y +fix_pos;
+    else,  max_y = max_y -fix_pos; end
     min_x = min(x_position);
+    if min_x < 0, min_x = min_x +fix_pos;
+    else,  min_x = min_x -fix_pos; end
     min_y = min(y_position);
+    if min_y < 0, min_y = min_y +fix_pos;
+    else,  min_y = min_y -fix_pos; end
+    
     maxs_mins(:,:,ang) = [ min_x max_x;min_y max_y];
     
 end
