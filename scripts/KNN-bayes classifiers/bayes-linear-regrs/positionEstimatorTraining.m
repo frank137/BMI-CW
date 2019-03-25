@@ -16,7 +16,7 @@ function  [modelParameters] = positionEstimatorTraining(trainingData)
 %[data_formatted, labels] = tidy_spikes(trainingData,time_range);
 [n,k] = size(trainingData);
 [i,t] = size(trainingData(1,1).spikes);
-conv_condintioning = 18;
+cov_condintioning = 18;
 train_times = 320:20:400;
 data_formatted_per_train_time = struct;
 for end_t = 1:1:length(train_times)
@@ -43,8 +43,8 @@ for end_t = 1:1:length(train_times)
         parameters(id+1).mu = mean(train_C);
         
         %covariances
-        parameters(id).s = cov(train_NC)+eye(size(train_NC,2))*conv_condintioning;
-        parameters(id+1).s = cov(train_C)+eye(size(train_NC,2))*conv_condintioning;
+        parameters(id).s = cov(train_NC)+eye(size(train_NC,2))*cov_condintioning;
+        parameters(id+1).s = cov(train_C)+eye(size(train_NC,2))*cov_condintioning;
         
         %upadte id for next class
         id = id+2;
@@ -55,6 +55,8 @@ end
 % regressor
 data_formatted_train = prepare_regressor_data(trainingData,'train');
 r = 36;
+fix_pos = 8;
+
 for ang = 1:k
     %get x positin from processed training data
     x_position = data_formatted_train(ang).out(:,1);
@@ -73,7 +75,7 @@ for ang = 1:k
     coeffs(:,:,ang) = [params_x,params_y];
     
     % get max and mins for x and y in order to later bound estimations
-    fix_pos = 8;
+    
     max_x = max(x_position);
     if max_x < 0, max_x = max_x +fix_pos;
     else,  max_x = max_x -fix_pos; end
@@ -173,14 +175,6 @@ if strcmp(train_or_test,'train')
     % .out(20,:) contains the x and y position for trial 20 at time stamp
     % 320ms, .out(120,:) contains the x and y for trial 20 at time stamp
     % 340 ms and so on.
-    % I BELIEVE WHAT IS ABOVE IS WRONG, I propose
-    % .in(1,1) contains the sum of the spikes up to time 320 ms for
-    % movement 1 ??????
-    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %
-    %       PLEASE FRAN CHANGE THIS
-    %
-    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                    Electrode 1 | Electrode 2 | Electrode 3 ...
     %Trial 1 - 1:320ms  | sum(spikes)|
     %Trial 2 - 1:320ms  |
