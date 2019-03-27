@@ -11,8 +11,8 @@ ix = randperm(length(trial));
 %addpath(teamName);
 
 % Select training and testing data (you can choose to split your data in a different way if you wish)
-trainingData = trial(ix(1:18),:);
-testData = trial(ix(19:end),:);
+trainingData = trial(ix(1:80),:);
+testData = trial(ix(81:end),:);
 
 
 

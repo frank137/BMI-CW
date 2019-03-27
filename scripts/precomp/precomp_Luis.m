@@ -171,6 +171,7 @@ figure
 movement = 1;
 
 xmap = zeros(100,750);
+posPad = zeros(1,975);
 for i = 1:length(trial(:,movement)) % for the 100 trials for movement 1
     handpos = trial(i,movement).handPos; %pick spikes out of trial i for
     %electrode (neuron) 1 for all the timesteps
@@ -216,33 +217,31 @@ title('z position over 100 trials')
 %% finding angle
 
 %finding angle
-movement = 3;
-
-for i = 1:length(trial(:,movement)) % for the 100 trials for movement 1
-    handpos = trial(i,movement).handPos; %pick spikes out of trial i for
-    %electrode (neuron) 1 for all the timesteps
-    angle = [];
-    timelength = length(handpos);
-    %cos theta = a dot b /|a||b|
-    for a = 1:timelength-1
-        x = [handpos(1,a) handpos(1,a+1)];
-        y = [handpos(2,a) handpos(2,a+1)];
-        angle(a) = acos(dot(x,y)/(norm(x)*norm(y)));
-        
-    end
-    angle = (180/pi)*angle;
-    plot(angle)
-    pause(0.2)
-    
-end
+% movement = 3;
+% 
+% for i = 1:length(trial(:,movement)) % for the 100 trials for movement 1
+%     handpos = trial(i,movement).handPos; %pick spikes out of trial i for
+%     %electrode (neuron) 1 for all the timesteps
+%     angle = [];
+%     timelength = length(handpos);
+%     %cos theta = a dot b /|a||b|
+%     for a = 1:timelength-1
+%         x = [handpos(1,a) handpos(1,a+1)];
+%         y = [handpos(2,a) handpos(2,a+1)];
+%         angle(a) = acos(dot(x,y)/(norm(x)*norm(y)));
+%         
+%     end
+%     angle = (180/pi)*angle;
+%     plot(angle)
+%     pause(0.2)
+%     
+% end
 
 %% tuning curve
-hfig = figure('Toolbar','none',...
-    'Menubar', 'none',...
-    'Name','Tuning curves for all 96 electrodes',...
+hfig = figure('Name','Tuning curves for all 96 electrodes',...
     'NumberTitle','off',...
     'IntegerHandle','off');
-for j = 1:96
+for j = 1:98
     spikes_total = zeros(8,975);
     %for all movements
     for movement = 1:8
@@ -291,9 +290,10 @@ for j = 1:96
     title(num2str(j))
     ylim([0 0.1])
     xlim([1 8])
+    grid on
     
 end
-suptitle('Tuning curve for all 96 electrodes, x-axis is the movement and y axis is avg spike rate')
+suptitle('Tuning curve for all 98 electrodes, x-axis is the movement and y-axis is the spike density (# of spikes/trial/ms)')
 
 
 
