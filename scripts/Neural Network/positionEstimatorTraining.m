@@ -39,7 +39,7 @@ net.divideParam.valRatio = 20/100;
 net.divideParam.testRatio = 0/100;
 
 % Choose a Performance Function
-net.performFcn = 'mae';
+net.performFcn = 'crossentropy'; %sae is good crossentropy
 
 % Train the Network
 [net,tr] = train(net, data_formatted,labels);
@@ -64,7 +64,7 @@ count = 1;
 for a = 1:k
     for t = 1:n % number of trials
         for el = 1:i
-            data_formatted(count,el) = red_dim(data_to_format(t,a).spikes(el,:));
+            data_formatted(count,el) = red_dim(data_to_format(t,a).spikes(el,1:380));
         end
         labels(count,1) = a;
         count = count +1;

@@ -30,7 +30,7 @@ net.divideParam.testRatio = 15/100;
 
 % Choose a Performance Function
 % For a list of all performance functions type: help nnperformance
-net.performFcn = 'mae';  % Cross-Entropy
+net.performFcn = 'mae';  % Mean absolute error performance function.
 
 % Choose Plot Functions
 % For a list of all plot functions type: help nnplot

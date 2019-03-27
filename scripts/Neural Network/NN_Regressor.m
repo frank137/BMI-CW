@@ -1,21 +1,12 @@
-%%% Team Members: Francesco Guagliardo, Luis
-%%% Chaves Rodriguez, Daniele Olmeda, Arun Paul
-%%% NN
-function [x, y, newModelParameters] = positionEstimator(test_data, modelParameters)
+clc,clear
+load('monkeydata_training.mat')
+[data_formatted, labels] = tidy_spikes(trial);
 
-[i,t] = size(test_data(1,1).spikes);
-newModelParameters = modelParameters;
+labels = full(ind2vec(labels'));
+data_formatted = data_formatted';
+data_formatted3 = cat(3, data_formatted, data_formatted)
 
-if t <= 380
-    [test_data_formatted, ~] = tidy_spikes(test_data);
-    test_data_formatted = test_data_formatted';
-    newModelParameters.label = vec2ind(modelParameters.net(test_data_formatted));
-end
-
-label = newModelParameters.label;
-x = modelParameters.mean_vals(label).mean_pos(1,t);
-y = modelParameters.mean_vals(label).mean_pos(2,t);
-end
+%trial(n,k).handPos
 
 % format the data in a way
 function [data_formatted, labels] = tidy_spikes(data_to_format)
