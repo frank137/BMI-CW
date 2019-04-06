@@ -16,9 +16,10 @@ function  [modelParameters] = positionEstimatorTraining(trainingData)
 %[data_formatted, labels] = tidy_spikes(trainingData,time_range);
 [n,k] = size(trainingData);
 [i,t] = size(trainingData(1,1).spikes);
-cov_condintioning = 18;
+cov_condintioning = 27;
 train_times = 320:20:400;
 data_formatted_per_train_time = struct;
+tic
 for end_t = 1:1:length(train_times)
     [data_formatted, labels] = tidy_spikes(trainingData,1:train_times(end_t));
     data_formatted_per_train_time(end_t).data_formatted = data_formatted;
@@ -52,10 +53,11 @@ for end_t = 1:1:length(train_times)
     end
     data_formatted_per_train_time(end_t).parameters = parameters;
 end
+toc
 % regressor
 data_formatted_train = prepare_regressor_data(trainingData,'train');
 r = 36;
-fix_pos = 8;
+fix_pos = 6;
 
 for ang = 1:k
     %get x positin from processed training data

@@ -29,10 +29,12 @@ figure
 hold on
 axis square
 grid
-
 % Train Model
+
 modelParameters = positionEstimatorTraining(trainingData);
+
 %%
+tic
 count = 1;
 for tr=1:size(testData,1)
     display(['Decoding block ',num2str(tr),' out of ',num2str(size(testData,1))]);
@@ -77,18 +79,20 @@ for tr=1:size(testData,1)
         %         count = count + 1;
     end
 end
-
+toc
 legend('Decoded Position', 'Actual Position')
-
+xlabel('x-position')
+ylabel('y-position')
+set(gca,'fontsize', 16);
 RMSE = sqrt(meanSqError/n_predictions)
 figure
 [acc, f1, conf_mat] = calc_conf(true_lab, knn_lab)
 
 confusionchart(true_lab,knn_lab);
-title(['KNN, accuracy: ',num2str(acc*100),'%, f1 score: ',num2str(f1)])
+title(['Bayes Classifier, accuracy: ',num2str(acc*100),'%, f1 score: ',num2str(f1)])
+set(gca,'fontsize', 16);
 %rmpath(genpath(teamName))
 %end
-
 % manually calcualte confusion matrix
 function [acc, f1, conf_mat] = calc_conf(original, predicted )
 class_numb = max(original);

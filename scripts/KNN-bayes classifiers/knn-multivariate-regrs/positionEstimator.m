@@ -80,7 +80,7 @@ for i = 1:input_len
     
     label(i,1) = class_unique(pred_class_idx);
 end
-
+%label = direc;
 % regressor
 test_input = prepare_regressor_data(test_data,'test');
 if modelParameters.coeff_pca(label) ~= 0 % this only applies if pca was done
@@ -88,6 +88,10 @@ if modelParameters.coeff_pca(label) ~= 0 % this only applies if pca was done
 end
 prediction = test_regressor_bmi(test_input, modelParameters.regr_param(label));
 
+%x = modelParameters.mean_vals(label).mean_pos(1,t);
+%y = modelParameters.mean_vals(label).mean_pos(2,t);
+%prediction(1)= modelParameters.mean_vals(label).mean_pos(1,t);
+%prediction(2)= modelParameters.mean_vals(label).mean_pos(2,t);
 % max min check
 maxmins = modelParameters.extremes;
 min_x = maxmins(1,1,label);
@@ -103,8 +107,7 @@ if prediction(2) < min_y,  prediction(2) = min_y; end
 
 x = prediction(1);
 y = prediction(2);
-%x = modelParameters.mean_vals(label).mean_pos(1,t);
-%y = modelParameters.mean_vals(label).mean_pos(2,t);
+
 modelParameters.test_label = label;
 new_param = modelParameters;
 end
