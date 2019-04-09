@@ -18,12 +18,14 @@ function  [modelParameters] = positionEstimatorTraining(trainingData)
 [i,t] = size(trainingData(1,1).spikes);
 
 train_times = 320:20:400;%540;
+fix_pos = 6;
+tic
 data_formatted_per_train_time = zeros(n*k,i,length(train_times));
 for end_t = 1:length(train_times)
     [data_formatted, labels] = tidy_spikes(trainingData,1:train_times(end_t));
     data_formatted_per_train_time(:,:,end_t) = data_formatted;    
 end
-
+toc
 % regressor
 data_formatted_train = prepare_regressor_data(trainingData,'train');
 W = 2;
@@ -35,12 +37,21 @@ coeff_pca(:,:,ang) = data_formatted_train(ang).coeff_pca;
 x_position = data_formatted_train(ang).out(:,1);
 %get y position from processed training data
 y_position = data_formatted_train(ang).out(:,2);
-% get max and mins for x and y in order to later bound estimations
-max_x = max(x_position);
-max_y = max(y_position);
-min_x = min(x_position);
-min_y = min(y_position);
-maxs_mins(:,:,ang) = [ min_x max_x;min_y max_y];
+% get max and mins for x and y in order to later bound estimations    
+    max_x = max(x_position);
+    if max_x < 0, max_x = max_x +fix_pos;
+    else,  max_x = max_x -fix_pos; end
+    max_y = max(y_position);
+    if max_y < 0, max_y = max_y +fix_pos;
+    else,  max_y = max_y -fix_pos; end
+    min_x = min(x_position);
+    if min_x < 0, min_x = min_x +fix_pos;
+    else,  min_x = min_x -fix_pos; end
+    min_y = min(y_position);
+    if min_y < 0, min_y = min_y +fix_pos;
+    else,  min_y = min_y -fix_pos; end
+    
+    maxs_mins(:,:,ang) = [ min_x max_x;min_y max_y];
 
 end
 

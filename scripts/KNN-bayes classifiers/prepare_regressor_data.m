@@ -20,7 +20,7 @@ times = start_time:step_time:end_time;
 % dim_reducer "combines" electrodes by adding the spikes of every
 % consecutive 3, dim_reducer MUST BE A FACTOR OF THE NUMBER OF ELECTRODES
 % WE ARE USING, OTHERWISE TROUBLE
-dim_reducer = 1;%14; % final dimensions will be initial dimensions / dim_reducer
+dim_reducer = 14; % final dimensions will be initial dimensions / dim_reducer
 if strcmp(train_or_test,'train')
     % .in(20,30) contains the sum of the spikes up to time 320ms of
     % electrode number 30 for trial 20.

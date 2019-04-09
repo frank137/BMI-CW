@@ -98,8 +98,8 @@ prediction(1) = params_x'*Urx*Srx*Vrx';
 [Ury,Sry,Vry] = svds([1,test_input]',r);
 prediction(2) = params_y'*Ury*Sry*Vry';
 
-% prediction(1) = params_x'*[1,test_input]';
-% prediction(2) = params_y'*[1,test_input]';
+ %prediction(1) = params_x'*[1,test_input]';
+ %prediction(2) = params_y'*[1,test_input]';
 
 % max min check
 maxmins = modelParameters.extremes;
@@ -191,14 +191,6 @@ if strcmp(train_or_test,'train')
     % .out(20,:) contains the x and y position for trial 20 at time stamp
     % 320ms, .out(120,:) contains the x and y for trial 20 at time stamp
     % 340 ms and so on.
-    % I BELIEVE WHAT IS ABOVE IS WRONG, I propose
-    % .in(1,1) contains the sum of the spikes up to time 320 ms for
-    % movement 1 ??????
-    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %
-    %       PLEASE FRAN CHANGE THIS
-    %
-    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                    Electrode 1 | Electrode 2 | Electrode 3 ...
     %Trial 1 - 1:320ms  | sum(spikes)|
     %Trial 2 - 1:320ms  |
