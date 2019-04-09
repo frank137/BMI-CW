@@ -28,14 +28,14 @@ ySTD = std(yall);
 range = 1:600;
 % Plot average movement over 100 trials
 hold off
-subplot(2,1,2)
+subplot(5,1,5)
 hold on
 plot(handpos_tt(1,range))
 shadedErrorBar(range,xAvg(range),xSTD(range),'lineProps','r')
 hold on
 plot(handpos_tt(2,range))
 shadedErrorBar(range,yAvg(range),ySTD(range),'lineProps','b')
-line([ 300 300],[-100 50],'Color','k')
+line([ 300 300],[-100 50],'Color','k','LineWidth',2)
 ylim([-100 50])
 %plot(handpos_tt(3,:))
 xlim([0 length(range)])
@@ -50,7 +50,9 @@ grid on
 matrix = zeros(100,length(range));
 % 
 % Find and plot spike map at simgle electrode level
-for electrode = 1:98
+i_count = 1;
+for electrode = [87 90 38 39]
+    
     for i = 1:length(trial(:,movement)) % for the 100 trials for selected movement
         cell = trial(i,1).spikes(electrode,:); %pick spikes out of trial i for all electrode
         
@@ -58,7 +60,7 @@ for electrode = 1:98
     end
     
     %   plotSpikeRaster(matrix)
-    subplot(2,1,1)
+    subplot(5,1,i_count)
 %     hold off
 %     line([300 300],[-0 100],'Color','k')
 %     hold on
@@ -67,8 +69,10 @@ for electrode = 1:98
     title({['Spikes for movement ',num2str(movement)];
         [' recorded at electrode ',num2str(electrode),' over 100 trials']})
     ylabel('Trials')
-    xlabel('Time (ms)')
-    pause;
+    line([ 300 300],[0 100],'Color','k','LineWidth',2)
+ylim([0 100])
+%     pause;
+    i_count = i_count +1;
 end
 
 

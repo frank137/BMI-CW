@@ -1,7 +1,7 @@
 %%% Team Members: Francesco Guagliardo, Luis
 %%% Chaves Rodriguez, Daniele Olmeda, Arun Paul
 %%% Bayes
-function [x, y, new_param] = positionEstimator(test_data, modelParameters)
+function [x, y, new_param] = positionEstimator(test_data, modelParameters,endtime)
 
 % **********************************************************
 %
@@ -50,13 +50,13 @@ input_time = size(test_data.spikes,2);
 % else
 %     time_range = 1:up_to;%280:480;
 % end
-train_times = 320:20:400;
+train_times = 320:20:endtime;
 up_to = find(train_times==input_time);
 if isempty(up_to)
     up_to = length(train_times);
 end
 
-
+% up_to = length(train_times);
 %[test_data_formatted, ~] = tidy_spikes(test_data,time_range);
 [test_data_formatted, ~] = tidy_spikes(test_data,1:train_times(up_to));
 label = zeros(size(test_data,1),1);

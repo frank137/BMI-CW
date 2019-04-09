@@ -1,7 +1,7 @@
 %%% Team Members: Francesco Guagliardo, Luis
 %%% Chaves Rodriguez, Daniele Olmeda, Arun Paul
 %%% Bayes implementation
-function  [modelParameters] = positionEstimatorTraining(trainingData)
+function  [modelParameters] = positionEstimatorTraining(trainingData,endtime)
 
 % Arguments:
 
@@ -17,7 +17,7 @@ function  [modelParameters] = positionEstimatorTraining(trainingData)
 [n,k] = size(trainingData);
 [i,t] = size(trainingData(1,1).spikes);
 cov_condintioning = 18;
-train_times = 320:20:400;
+train_times = 320:20:endtime;
 data_formatted_per_train_time = struct;
 for end_t = 1:1:length(train_times)
     [data_formatted, labels] = tidy_spikes(trainingData,1:train_times(end_t));
