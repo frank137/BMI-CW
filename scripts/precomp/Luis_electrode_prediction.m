@@ -51,7 +51,7 @@ matrix = zeros(100,length(range));
 % 
 % Find and plot spike map at simgle electrode level
 i_count = 1;
-for electrode = [87 90 38 39]
+for electrode = [27 90 38 9]
     
     for i = 1:length(trial(:,movement)) % for the 100 trials for selected movement
         cell = trial(i,1).spikes(electrode,:); %pick spikes out of trial i for all electrode

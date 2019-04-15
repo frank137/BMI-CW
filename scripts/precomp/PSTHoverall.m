@@ -105,8 +105,9 @@ for electrode_it = electrode
             %delete cell2 in case of any length mismatch between trials
             clear cell2
         end
-        %implement this if you want spikes to be averaged over trials
-        %spikes_total = spikes_total/100;
+        %implement this if you want spikes to be averaged over trials and
+        %time, so as to give spikes per trial per ms
+        spikes_total = spikes_total/(100*window);
         
         %store spikes_total for every movement selected
         spikes_overall(movement_it,:) = spikes_total(:);
@@ -166,9 +167,12 @@ for electrode_it = electrode
         %plot bar plot with x axis centered at the middle of each window, 
         %only plot correspondent spikes_total values as rest is 0s
         hold on
-        bar(window*(1-0.5:l2-0.5),spikes_avg(1:l2),1)
+        fig = bar(window*(1-0.5:l2-0.5),spikes_avg(1:l2),1);
+        up = spikes_avg(1:l2)+spikes_std(1:l2);
+        set(fig,'FaceColor', [0 0 0]);
+        set(fig,'EdgeColor', [1 1 1]);
         %don't plot errorbar here as it looks too messy
-        %errorbar(window*(1-0.5:l2-0.5),spikes_avg(1:l2),spikes_std(1:l2))
+%         errorbar(window*(1-0.5:l2-0.5),spikes_avg(1:l2),spikes_std(1:l2))
         grid on
         %if window is too short,only plot xticks in 200s as otherwise xaxis may
         %be impossible to visualise
@@ -179,6 +183,18 @@ for electrode_it = electrode
             xticks(window*(0:l2))
         end
         title(['Electrode ', num2str(electrode_it)])
+        
+         if max(up) < 0.025
+        set(gca,'Color',[0,0,0])
+        set(fig,'FaceColor', [1 1 1]);
+        set(fig,'EdgeColor', [0 0 0]);
+        ax2 = gca;
+        ax2.GridColor = [0.9 0.9 0.9];
+%     elseif max(up)<0.05
+%           set(gca,'Color',[0.8,0.8,0.8])
+%         fig.Color = [1 1 1];  
+    end
+    
         
 
     end

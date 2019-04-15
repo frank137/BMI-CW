@@ -1,5 +1,5 @@
 clear all
-close all
+
 
 tic
 load monkeydata_training.mat

@@ -268,6 +268,7 @@ for j = 1:98
     avg_spikes = mean(spikes_total);
     %calculate std of spikes over time
     std_spikes = std(spikes_total);
+    up = avg_spikes+std_spikes;
     %plot errorbar
     %     subplot(2,1,1)
     %     errorbar(avg_spikes,std_spikes)
@@ -285,9 +286,28 @@ for j = 1:98
     % xlim([1 8])
     %     pause(0.2)
     
-    subplot(10,10,j)
-    errorbar(avg_spikes,std_spikes)
-    title(num2str(j))
+    subplot(10,10,j);
+    fig(j) = errorbar(avg_spikes,std_spikes,'k');
+    if j<11
+        title(num2str(j))
+    end
+    if mod(j,10)==1
+        ylabel(char(65+floor(j/10)),'fontweight','bold');
+        ylh = get(gca,'ylabel');
+        gyl = get(ylh);                                                         % Object Information
+        ylp = get(ylh, 'Position');
+        set(ylh, 'Rotation',0, 'Position',ylp, 'VerticalAlignment','middle', 'HorizontalAlignment','right')
+    end
+    if max(up) < 0.025
+        set(gca,'Color',[0,0,0])
+        fig(j).Color = [1 1 1];
+        ax = gca;
+        ax.GridColor = [0.9 0.9 0.9];
+    elseif max(up)<0.05
+          set(gca,'Color',[0.8,0.8,0.8])
+        fig(j).Color = [1 1 1];  
+    end
+    
     ylim([0 0.1])
     xlim([1 8])
     grid on

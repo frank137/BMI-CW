@@ -17,8 +17,8 @@ ix = randperm(length(trial));
 %addpath(teamName);
 
 % Select training and testing data (you can choose to split your data in a different way if you wish)
-trainingData = trial(ix(1:80),:);
-testData = trial(ix(81:end),:);
+trainingData = trial(ix(1:99),:);
+testData = trial(ix(100:end),:);
 
 fprintf('Testing the continuous position estimator...')
 
@@ -32,7 +32,6 @@ grid
 % Train Model
 
 modelParameters = positionEstimatorTraining(trainingData);
-
 %%
 tic
 count = 1;

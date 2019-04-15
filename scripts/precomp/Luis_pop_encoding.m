@@ -10,7 +10,7 @@
 
 
 %% load file 
-clear, clc, close all
+clear, clc
 load monkeydata_training.mat
 %% total plotting
 % hfig = figure('Toolbar','none',...
@@ -38,7 +38,7 @@ xSTD = std(xall);
 ySTD = std(yall);
 % speed_tt = speed_tt/100;
 range = 1:600;
-hold off
+%hold off
 subplot(4,1,4)
 hold on
 plot(handpos_tt(1,range))
