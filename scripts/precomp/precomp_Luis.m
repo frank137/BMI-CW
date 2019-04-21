@@ -308,7 +308,7 @@ for j = 1:98
         fig(j).Color = [1 1 1];  
     end
     
-    ylim([0 0.1])
+%     ylim([0 0.1])
     xlim([1 8])
     grid on
     

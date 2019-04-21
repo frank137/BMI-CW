@@ -36,9 +36,7 @@ max_cell2 = 0;
 l2 = 0;
 
 if (plot_option == 1 || plot_option == 2) == 1
-    hfig = figure('Toolbar','none',...
-        'Menubar', 'none',...
-        'Name','Peri-stimulus Time Histogram plotter',...
+   figure('Name','Peri-stimulus Time Histogram plotter',...
         'NumberTitle','off',...
         'IntegerHandle','off','units','normalized','outerposition',[0 0 1 1]);
 end
@@ -178,11 +176,12 @@ for electrode_it = electrode
         %be impossible to visualise
         if window<200
             xticks(200*(0:l2))
+%             xtickangle(45)
         else
             %if window is sufficiently large do ticks at every window edge
             xticks(window*(0:l2))
         end
-        title(['Electrode ', num2str(electrode_it)])
+        title([num2str(electrode_it)])
         
          if max(up) < 0.025
         set(gca,'Color',[0,0,0])
@@ -202,7 +201,7 @@ for electrode_it = electrode
 end
 
 if plot_option == 2
-    linkaxes(ax(:),'xy')
+    linkaxes(ax(:),'x')
     ax(1).XLim = [0,800];
     %xtickangle(ax(:),45)
     suptitle({['PSTHs for movements: ',num2str(movement),'.'];['Spike window of ',num2str(window),'ms']});
