@@ -60,8 +60,8 @@ end
 toc
 % regressor
 data_formatted_train = prepare_regressor_data(trainingData,'train');
-r = 36;
-fix_pos = 6;
+r =13;
+fix_pos = 8;
 
 for ang = 1:k
     %get x positin from processed training data
