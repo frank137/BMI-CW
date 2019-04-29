@@ -1,5 +1,5 @@
 
-function [x, y] = positionEstimator(test_data, modelParameters)
+function [x, y,modelParameters] = positionEstimator(test_data, modelParameters)
 
 % **********************************************************
 %
@@ -70,6 +70,7 @@ end
 TEST = [TEST;processed_test];
 
 predicted_label = predict(modelParameters.Mdl,TEST);
+modelParameters.test_label = predicted_label;
 test_spikes = prepare_regressor_data(test_data,'test');
 % Xparams = modelParameters.Xparams;
 % Yparams = modelParameters.Yparams;

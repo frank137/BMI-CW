@@ -94,7 +94,8 @@ set(gca,'fontsize', 16);
 RMSE = sqrt(meanSqError/n_predictions)
 figure
 [acc, f1, conf_mat] = calc_conf(true_lab, labels)
-confusionchart(true_lab,labels);
+% confusionchart(true_lab,labels);
+heatmap(conf_mat)
 title(['Bayes Classifier, accuracy: ',num2str(acc*100),'%, f1 score: ',num2str(f1)])
 set(gca,'fontsize', 16);
 %rmpath(genpath(teamName))
