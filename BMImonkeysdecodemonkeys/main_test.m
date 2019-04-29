@@ -12,8 +12,8 @@ load monkeydata_training.mat
 %addpath knn-classifier-with-linear-regressor
 %addpath knn-multivariate-regressor
 %addpath bayes-calssifier-with-linear-regressor
-%addpath SVM-classifier-with-linear-regressor
-addpath NN-classifier-with-mean-regressor
+addpath SVM-classifier-with-linear-regressor
+%addpath NN-classifier-with-mean-regressor
 %addpath SUBMITTED-Bayes-classifier-with-PCR-regressor
 
 %%
@@ -70,9 +70,9 @@ for tr=1:size(testData,1)
             decodedHandPos = [decodedHandPos decodedPos];
             
             meanSqError = meanSqError + norm(testData(tr,direc).handPos(1:2,t) - decodedPos)^2;
-            true_lab(count) = direc;
-            labels(count) = newParameters.test_label;
-            count = count + 1;
+%             true_lab(count) = direc;
+%             labels(count) = newParameters.test_label;
+%             count = count + 1;
             
         end
         n_predictions = n_predictions+length(times);
