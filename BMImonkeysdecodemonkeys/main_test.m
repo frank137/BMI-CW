@@ -70,9 +70,9 @@ for tr=1:size(testData,1)
             decodedHandPos = [decodedHandPos decodedPos];
             
             meanSqError = meanSqError + norm(testData(tr,direc).handPos(1:2,t) - decodedPos)^2;
-%             true_lab(count) = direc;
-%             labels(count) = newParameters.test_label;
-%             count = count + 1;
+            true_lab(count) = direc;
+             labels(count) = newParameters.test_label;
+             count = count + 1;
             
         end
         n_predictions = n_predictions+length(times);
@@ -94,7 +94,7 @@ set(gca,'fontsize', 16);
 RMSE = sqrt(meanSqError/n_predictions)
 figure
 [acc, f1, conf_mat] = calc_conf(true_lab, labels)
-
+confusionchart(true_lab,labels);
 title(['Bayes Classifier, accuracy: ',num2str(acc*100),'%, f1 score: ',num2str(f1)])
 set(gca,'fontsize', 16);
 %rmpath(genpath(teamName))
