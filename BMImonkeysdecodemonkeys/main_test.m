@@ -12,9 +12,9 @@ load monkeydata_training.mat
 %addpath knn-classifier-with-linear-regressor
 %addpath knn-multivariate-regressor
 %addpath bayes-calssifier-with-linear-regressor
-addpath SVM-classifier-with-linear-regressor
+%addpath SVM-classifier-with-linear-regressor
 %addpath NN-classifier-with-mean-regressor
-%addpath SUBMITTED-Bayes-classifier-with-PCR-regressor
+addpath SUBMITTED-Bayes-classifier-with-PCR-regressor
 
 %%
 
